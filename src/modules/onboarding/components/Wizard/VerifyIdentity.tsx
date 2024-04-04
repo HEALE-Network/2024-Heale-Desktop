@@ -34,6 +34,7 @@ import {
 import { formatDateToISO, toastSuccess } from 'utils/helpers';
 import { getAccountTypeFromLocalStorage } from 'services/localStorage.sevice';
 import { saveProfile } from 'services/user.service';
+import { useEffect } from 'react';
 
 //             'dob' => 'required|date',
 //             'heal_usage' => 'required|string',
@@ -95,13 +96,12 @@ const VerifyIdentity = () => {
       address_1,
       address_2,
     };
-    console.log('userProfile', userProfile);
-    const response = await saveProfile(userProfile);
-    console.log("resposneeeee: ", response)
-    if (response?.status) {
-      toastSuccess(response?.data?.message);
+    // const response = await saveProfile(userProfile);
+    // console.log("resposneeeee: ", response)
+    // if (response?.status) {
+    //   toastSuccess(response?.data?.message);
       nextStep();
-    }
+    // }
   };
   return (
     <Box>
@@ -186,55 +186,63 @@ const VerifyIdentity = () => {
               <FormControl>
                 <FormLabel htmlFor="dob">Date of birth</FormLabel>
                 <Grid gridTemplateColumns={'repeat(3,1fr)'} gap={6}>
-                  <Select
-                    placeholder="Month"
-                    isInvalid={errors?.month?.message ? true : false}
-                    errorBorderColor="Secondary.Red"
-                    {...register('month', {
-                      required: 'This field is required',
-                    })}
-                  >
-                    {Array.from({ length: 12 }, (_, i) => i + 1).map(
-                      (month) => (
-                        <option key={month} value={month}>
-                          {month}
-                        </option>
-                      )
-                    )}
-                  </Select>
-                  <FormErrorMessage message={errors?.month?.message} />
-                  <Select
-                    placeholder="Day"
-                    isInvalid={errors?.day?.message ? true : false}
-                    errorBorderColor="Secondary.Red"
-                    {...register('day', {
-                      required: 'This field is required',
-                    })}
-                  >
-                    {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
-                      <option key={day} value={day}>
-                        {day}
-                      </option>
-                    ))}
-                  </Select>
-                  <FormErrorMessage message={errors?.day?.message} />
-                  <Select
-                    placeholder="Year"
-                    isInvalid={errors?.year?.message ? true : false}
-                    errorBorderColor="Secondary.Red"
-                    {...register('year', {
-                      required: 'This field is required',
-                    })}
-                  >
-                    {Array.from({ length: 100 }, (_, i) => i + 1920).map(
-                      (year) => (
-                        <option key={year} value={year}>
-                          {year}
-                        </option>
-                      )
-                    )}
-                  </Select>
-                  <FormErrorMessage message={errors?.year?.message} />
+                  <Box>
+                    <Select
+                      placeholder="Month"
+                      isInvalid={errors?.month?.message ? true : false}
+                      errorBorderColor="Secondary.Red"
+                      {...register('month', {
+                        required: 'This field is required',
+                      })}
+                    >
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                        (month) => (
+                          <option key={month} value={month}>
+                            {month}
+                          </option>
+                        )
+                      )}
+                    </Select>
+                    <FormErrorMessage message={errors?.month?.message} />
+                  </Box>
+                  <Box>
+                    <Select
+                      placeholder="Day"
+                      isInvalid={errors?.day?.message ? true : false}
+                      errorBorderColor="Secondary.Red"
+                      {...register('day', {
+                        required: 'This field is required',
+                      })}
+                    >
+                      {Array.from({ length: 31 }, (_, i) => i + 1).map(
+                        (day) => (
+                          <option key={day} value={day}>
+                            {day}
+                          </option>
+                        )
+                      )}
+                    </Select>
+                    <FormErrorMessage message={errors?.day?.message} />
+                  </Box>
+                  <Box>
+                    <Select
+                      placeholder="Year"
+                      isInvalid={errors?.year?.message ? true : false}
+                      errorBorderColor="Secondary.Red"
+                      {...register('year', {
+                        required: 'This field is required',
+                      })}
+                    >
+                      {Array.from({ length: 100 }, (_, i) => 2020 - i).map(
+                        (year) => (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        )
+                      )}
+                    </Select>
+                    <FormErrorMessage message={errors?.year?.message} />
+                  </Box>
                 </Grid>
               </FormControl>
             </GridItem>
@@ -277,14 +285,10 @@ const VerifyIdentity = () => {
                   <GridItem colSpan={3}>
                     <Input
                       type="text"
-                      isInvalid={errors?.address_2?.message ? true : false}
-                      errorBorderColor="Secondary.Red"
+                      // errorBorderColor="Secondary.Red"
                       placeholder="Address line 2"
-                      {...register('address_2', {
-                        required: 'This field is required',
-                      })}
+                      {...register('address_2')}
                     />
-                    <FormErrorMessage message={errors?.address_2?.message} />
                   </GridItem>
                   <GridItem colSpan={2}>
                     <Input

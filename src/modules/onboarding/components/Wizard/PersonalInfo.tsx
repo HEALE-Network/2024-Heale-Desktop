@@ -20,7 +20,10 @@ import React, { useState, useEffect } from 'react';
 import { useWizard } from 'react-use-wizard';
 import FormErrorMessage from 'modules/shared/FormErrorMessage';
 import { signUp } from 'services/auth.service';
-import { getTokenFromLocalStorage, saveTokenToLocalStorage } from 'services/localStorage.sevice';
+import {
+  getTokenFromLocalStorage,
+  saveTokenToLocalStorage,
+} from 'services/localStorage.sevice';
 import { toastSuccess, validatePasswords } from 'utils/helpers';
 
 const PersonalInfo = () => {
@@ -36,7 +39,7 @@ const PersonalInfo = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
- 
+
 
   useEffect(() => {
     if (getTokenFromLocalStorage()) nextStep();
@@ -46,7 +49,11 @@ const PersonalInfo = () => {
     const { first_name, last_name, email, handle, password, confirm_password } =
       values;
 
-    const isPasswordValidated = validatePasswords(password, confirm_password, setError);
+    const isPasswordValidated = validatePasswords(
+      password,
+      confirm_password,
+      setError
+    );
     if (!isPasswordValidated) return; // Early return if there's a password mismatch
 
     const user: any = {
