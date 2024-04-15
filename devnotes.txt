@@ -1,0 +1,148 @@
+Heale Desktop Web3 install notes - Charles Voltron
+
+
+
+Thirdweb for web3 communication to the blockchain was installed via npm. 
+Upon integration and running the app I encountered the following error:
+
++++++ BEGIN ERROR MESSAGE +++++
+
+
+  Compiled with problems:
+×
+ERROR in ./node_modules/cipher-base/index.js 2:16-43
+Module not found: Error: Can't resolve 'stream' in '/Users/sovryn73/Desktop/HEALE-2024/2024-Heale-Desktop/node_modules/cipher-base'
+
+BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default.
+This is no longer the case. Verify if you need this module and configure a polyfill for it.
+
+If you want to include a polyfill, you need to:
+- add a fallback 'resolve.fallback: { "stream": require.resolve("stream-browserify") }'
+- install 'stream-browserify'
+If you don't want to include a polyfill, you can use an empty module like this:
+resolve.fallback: { "stream": false }
+ERROR in ./node_modules/micro-ftch/index.js 57:15-30
+Module not found: Error: Can't resolve 'http' in '/Users/sovryn73/Desktop/HEALE-2024/2024-Heale-Desktop/node_modules/micro-ftch'
+
+BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default.
+This is no longer the case. Verify if you need this module and configure a polyfill for it.
+
+If you want to include a polyfill, you need to:
+- add a fallback 'resolve.fallback: { "http": require.resolve("stream-http") }'
+- install 'stream-http'
+If you don't want to include a polyfill, you can use an empty module like this:
+resolve.fallback: { "http": false }
+ERROR in ./node_modules/micro-ftch/index.js 58:16-32
+Module not found: Error: Can't resolve 'https' in '/Users/sovryn73/Desktop/HEALE-2024/2024-Heale-Desktop/node_modules/micro-ftch'
+
+BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default.
+This is no longer the case. Verify if you need this module and configure a polyfill for it.
+
+If you want to include a polyfill, you need to:
+- add a fallback 'resolve.fallback: { "https": require.resolve("https-browserify") }'
+- install 'https-browserify'
+If you don't want to include a polyfill, you can use an empty module like this:
+resolve.fallback: { "https": false }
+ERROR in ./node_modules/micro-ftch/index.js 59:15-30
+Module not found: Error: Can't resolve 'zlib' in '/Users/sovryn73/Desktop/HEALE-2024/2024-Heale-Desktop/node_modules/micro-ftch'
+
+BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default.
+This is no longer the case. Verify if you need this module and configure a polyfill for it.
+
+If you want to include a polyfill, you need to:
+- add a fallback 'resolve.fallback: { "zlib": require.resolve("browserify-zlib") }'
+- install 'browserify-zlib'
+If you don't want to include a polyfill, you can use an empty module like this:
+resolve.fallback: { "zlib": false }
+
++++++ END ERROR MESSAGE +++++++
+
+AI suggested this :
+ the errors you're encountering are likely a direct result of adding
+ the @thirdweb-dev/react and possibly other @thirdweb-dev packages to your project.
+ These packages, or their dependencies, may rely on Node.js core modules such as 
+stream, http, https, and zlib, which are not natively available in the browser environment.
+
+
+
+When you integrate such packages into a React application (which is primarily targeted for browsers),
+ and if your build tool (Webpack, in this case) does not automatically polyfill these Node.js modules
+ for the browser, you'll encounter these errors.
+
+
+
+Webpack 4 used to polyfill these modules by default, but Webpack 5 changed this behavior and 
+no longer includes polyfills for Node.js core modules, requiring developers to manually add them
+ if needed. This change is part of Webpack's move towards offering a more optimized and customizable
+ build process, but it does require additional configuration when working with packages that depend
+ on Node.js modules.
+  The errors you're encountering are due to Webpack 5 no longer automatically polyfilling Node.js 
+core modules like `stream`, 
+[http](file:///Users/sovryn73/Desktop/HEALE-2024/2024-Heale-Desktop/README.md#12%2C7-12%2C7),
+ [https](file:///Users/sovryn73/Desktop/HEALE-2024/2024-Heale-Desktop/README.md#54%2C31-54%2C31),
+  and `zlib` for browser environments. To resolve these errors, you need to manually add polyfills
+   for these modules in your Webpack configuration. 
+   Here's how you can do it:  
+1. Install the necessary polyfill packages: npm install stream-browserify stream-http 
+https-browserify browserify-zlib  
+2. Update your Webpack configuration (`webpack.config.js`) to include the fallbacks for the 
+required modules. If you're using Create React App and don't have direct access to the Webpack config, you'll need to eject or use `craco` or `react-app-rewired` to override the configuration without ejecting.  
+For direct Webpack configuration, add the following to your `webpack.config.js`:
+
+  resolve: {
+  fallback: {
+    "stream": require.resolve("stream-browserify"),
+    "http": require.resolve("stream-http"),
+    "https": require.resolve("https-browserify"),
+    "zlib": require.resolve("browserify-zlib"),
+  },
+}  
+This configuration tells Webpack to use the specified browser-friendly implementations
+ when building your application for the browser, effectively polyfilling the missing
+  Node.js core modules.
+
+
++++++ NOTE +++ I was unable to locate a webpack.config.js file so had to do the following
+
+ -   If you're using Create React App (CRA) and don't have a `webpack.config.js` file, it's 
+ because CRA abstracts the Webpack configuration to simplify the setup process. To customize
+  the Webpack configuration without ejecting, you can use `craco` 
+  (Create React App Configuration Override).  
+Here's how you can add the necessary polyfills using `craco`:  
+First, you need to install `craco`:  npm install @craco/craco  
+2. **Create a `craco.config.js` File**:
+
+In the root of your project, create a `craco.config.js` file to customize the Webpack configuration:
+
+const webpack = require('webpack');
+
+module.exports = {
+  webpack: {
+    configure: (webpackConfig, { env, paths }) => {
+      webpackConfig.resolve.fallback = {
+        ...webpackConfig.resolve.fallback, // This spreads existing fallbacks to avoid 
+        overwriting them
+        "stream": require.resolve("stream-browserify"),
+        "http": require.resolve("stream-http"),
+        "https": require.resolve("https-browserify"),
+        "zlib": require.resolve("browserify-zlib"),
+      };
+      return webpackConfig;
+    },
+  },
+};
+
+
+3. **Update Scripts in `package.json`**:
+
+Modify the `start`, `build`, and `test` scripts in your `package.json` file to use `craco` 
+instead of `react-scripts`:
+
+"scripts": {
+  "start": "craco start",
+  "build": "craco build",
+  "test": "craco test"
+}
+
++++++ NOTES 
+This seems to have solved the issue  

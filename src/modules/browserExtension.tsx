@@ -5,6 +5,7 @@ import { DesktopIcon } from './shared/Icons';
 import { DownloadIcon } from './shared/Icons';
 import Success from './onboarding/components/Success';
 import { HealLogoHexagonIcon } from 'modules/shared/Icons';
+import { ConnectWallet } from "@thirdweb-dev/react";
 
 
 const BrowserExtension = () => {
@@ -16,8 +17,11 @@ const BrowserExtension = () => {
       <Box textAlign={'center'} mb={'30px'} w={'550px'} margin={"0 auto"}>
         <Image src='/Imageplaceholder.png' alt='image' w={'550px'} />
       </Box>
+
+      {/* add crypto here */}
+      <ConnectWallet/>
       <Box w={'550px'} margin={"0 auto"} textAlign={'left'}>
-        <Heading color={"Primary.Navy"} fontSize={"3xl"} my={30} as={"h4"}>Download Chrome browser Extension</Heading>
+        <Heading color={"Primary.Navy"} fontSize={"3xl"} my={30} as={"h4"}>Download xChrome browser Extension</Heading>
         <Text color={"Neutral.800"} fontSize={"md"}>We recommend installing the HEALE browser extension. It's an easy, fast, and secure way to interact with the HEALE network.</Text>
         <List spacing={5} color={"Neutral.800"} fontSize={"sm"} mt={10}>
           <ListItem display={"flex"} gap={3}>
