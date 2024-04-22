@@ -21,7 +21,8 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 2244
         script: |
-          ls -l && pwd
+          ls -l
+          pwd
           # cd /path/to/your/react/app
           # sudo pm2 stop all
           # sudo rm -rf *
