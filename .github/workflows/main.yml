@@ -13,12 +13,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Generate Coverage
-      env: 
-        REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_API_BASE_URL }} 
-
     - name: Build
       run: |
+        REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_API_BASE_URL }}
         npm install
         npm run build
 
