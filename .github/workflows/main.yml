@@ -28,11 +28,13 @@ jobs:
       run: |
         npm install --save-dev @babel/plugin-proposal-private-property-in-object
 
+
     - name: Zip & Rsync
       run: |
         ls -l && pwd
-        tar -czf code.tar.gz ./*
-        rsync -avz -e "ssh -p 2244" -o StrictHostKeyChecking=no" code.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
+        tar -czf code.tar.gz ./
+        rsync -avz -e "ssh -p 2244" -o StrictHostKeyChecking=no code.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
+
 
 
   deploy:
