@@ -26,14 +26,17 @@ jobs:
 
     - name: Install dependencies and build
       run: |
-        npm install --save-dev @babel/plugin-proposal-private-property-in-object
-
+        npm -v
 
     - name: Zip & Rsync
       run: |
         ls -l && pwd
+        # Wait for ongoing changes to finish (optional)
+        sleep 5
         tar -czf code.tar.gz ./
+        ls -l
         rsync -avz -e "ssh -p 2244" -o StrictHostKeyChecking=no code.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
+
 
 
 
