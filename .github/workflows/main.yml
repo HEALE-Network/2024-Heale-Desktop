@@ -32,8 +32,8 @@ jobs:
         script: |
           ls -l
           pwd
-          # cd /path/to/your/react/app
-          # sudo pm2 stop all
-          # sudo rm -rf *
-          # sudo cp -r /path/to/your/react/app/build/* .
-          # sudo pm2 start ecosystem.config.js --env production
+          cd /home/ubuntu/2024-Heale-Desktop
+          git pull origin main
+          npm i
+          npm run build
+          # /usr/bin/pm2 restart 0
