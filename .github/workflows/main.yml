@@ -34,7 +34,7 @@ jobs:
     - name: Zip & Rsync
       run: |
         ls -l && pwd
-        tar -czf code.tar.gz ./* --exclude=.git/*
+        tar -czf code.tar.gz ./&
         rsync -avz -e "ssh -p 2244" -o StrictHostKeyChecking=no" code.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
 
 
