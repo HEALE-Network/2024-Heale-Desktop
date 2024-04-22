@@ -21,6 +21,7 @@ jobs:
 
     - name: Build
       run: |
+        npm install --save-dev @babel/plugin-proposal-private-property-in-object
         npm install
         npm run build
 
