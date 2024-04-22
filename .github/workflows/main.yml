@@ -43,9 +43,18 @@ jobs:
         port: 2244
         script: |
           ls -l
-          pwd
-          # cd /home/ubuntu/2024-Heale-Desktop
-          # git pull origin main
-          # npm i
-          # npm run build
-          # # /usr/bin/pm2 restart 0
+          zip -r code.zip ./* -x '.git/*'
+          # Create a temporary directory
+          TMP_DIR=$(ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -p 2244 'mktemp -d')
+
+          # Sync the local repository to the temporary directory on the server
+          rsync -avz --delete --exclude='.git' --exclude='node_modules' code.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:$TMP_DIR
+
+          # # # Backup the previous deployment (optional, adjust path as needed)
+          # # ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -p 2244 "mv /var/www/html /var/www/html_backup_$(date +%Y%m%d_%H%M%S)"
+
+          # # Move the synced repository to the deployment directory
+          # ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -p 2244 "mv $TMP_DIR /var/www/html"
+
+          # # Clean up the temporary directory
+          # ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -p 2244 "rm -rf $TMP_DIR"
