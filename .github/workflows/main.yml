@@ -12,17 +12,13 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      
-    - name: 'Create env file'
+    
+    - name: Set up environment variables
       run: |
-        touch .env
-        echo process.env.CI=false >> .env
-        echo CI=false >> .env
-        echo REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }} >> .env
-        cat .env
-        pwd
+        echo "CI=false" >> $GITHUB_ENV
+        echo "REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }}" >> $GITHUB_ENV
 
-    - name: Build
+    - name: Install dependencies and build
       run: |
         npm install --save-dev @babel/plugin-proposal-private-property-in-object
         npm install
