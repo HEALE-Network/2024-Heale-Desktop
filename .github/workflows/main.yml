@@ -23,18 +23,15 @@ jobs:
         echo "CI=false" >> $GITHUB_ENV
         echo "REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }}" >> $GITHUB_ENV
         ls -l && pwd
-        tar -czf code.tar.gz ./* --exclude=.git/*
 
     - name: Install dependencies and build
       run: |
         npm install --save-dev @babel/plugin-proposal-private-property-in-object
-        npm install
-        npm run build
 
     - name: Zip & Rsync
       run: |
         ls -l && pwd
-        tar -czf code.tar.gz ./&
+        tar -czf code.tar.gz ./*
         rsync -avz -e "ssh -p 2244" -o StrictHostKeyChecking=no" code.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
 
 
