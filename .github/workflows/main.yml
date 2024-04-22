@@ -43,12 +43,12 @@ jobs:
         port: 2244
         script: |
           ls -l
-          zip -r code.zip ./* -x '.git/*'
+          tar -czf code.tar.gz ./* -x '.git/*'
           # Create a temporary directory
-          TMP_DIR=$(ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -p 2244 'mktemp -d')
+          TMP_DIR=$('mktemp -d')
 
           # Sync the local repository to the temporary directory on the server
-          rsync -avz --delete --exclude='.git' --exclude='node_modules' code.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:$TMP_DIR
+          rsync -avz -e "ssh -p 2244" code.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:$TMP_DIR
 
           # # # Backup the previous deployment (optional, adjust path as needed)
           # # ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -p 2244 "mv /var/www/html /var/www/html_backup_$(date +%Y%m%d_%H%M%S)"
