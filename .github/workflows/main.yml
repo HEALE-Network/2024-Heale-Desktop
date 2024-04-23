@@ -14,9 +14,10 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: '21.7.1'  #Specify the Node.js version you want to use
+
 
     - name: Set up environment variables
       run: |
@@ -35,7 +36,7 @@ jobs:
         ls -l && pwd
         # Wait for ongoing changes to finish (optional)
         sleep 5
-        zip -r code.zip --exclude=*.git *
+        zip -r code.zip --exclude=*.git --exclude=node_modules  *
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem  # Store private key in key.pem
         chmod 400 key.pem
         ls -l
@@ -50,17 +51,7 @@ jobs:
         port: 2244
         script: |
           ls -l && pwd
-          # tar -cvzf code.tar.gz ./* --exclude=.git/*
-          # # Create a temporary directory
-
-          # # Sync the local repository to the temporary directory on the server
-          # rsync -avz -e "ssh -p 2244" -o StrictHostKeyChecking=no" code.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
-
-          # # # Backup the previous deployment (optional, adjust path as needed)
-          # # ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -p 2244 "mv /var/www/html /var/www/html_backup_$(date +%Y%m%d_%H%M%S)"
-
-          # # Move the synced repository to the deployment directory
-          # ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -p 2244 "mv $TMP_DIR /var/www/html"
-
-          # # Clean up the temporary directory
-          # ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -p 2244 "rm -rf $TMP_DIR"
+          rm -rf /home/ubuntu/code/*
+          mv /tmp/code.zip /home/ubuntu/code/
+          unzip /home/ubuntu/code/code.zip
+          # npm install 
