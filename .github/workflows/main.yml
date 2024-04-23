@@ -28,17 +28,17 @@ jobs:
       run: |
         npm -v
 
+
     - name: Zip & Rsync
       run: |
         ls -l && pwd
         # Wait for ongoing changes to finish (optional)
         sleep 5
         zip -r code.zip --exclude=*.git *
-        touch key.pem && chmod 400 key.pem
-        echo ${{ secrets.SSH_PRIVATE_KEY }} >> key.pem  && cat key.pem
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem  # Store private key in key.pem
+        chmod 400 key.pem
         ls -l
-        #rsync -avz -e "ssh -p 2244" -o StrictHostKeyChecking=no code.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
-        rsync -avz -e "ssh -p 2244 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i key.pem"  code.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
+        rsync -avz -e "ssh -p 2244 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i key.pem" code.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
 
 
 
