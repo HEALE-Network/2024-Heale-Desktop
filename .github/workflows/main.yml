@@ -36,7 +36,7 @@ jobs:
         zip -r code.zip --exclude=*.git *
         ls -l
         #rsync -avz -e "ssh -p 2244" -o StrictHostKeyChecking=no code.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
-        rsync -avz -e "ssh -p 2244 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" code.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
+        rsync -avz -e "ssh -p 2244 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${{ secrets.SSH_PRIVATE_KEY }}"  code.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
 
 
 
