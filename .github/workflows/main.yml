@@ -39,16 +39,8 @@ jobs:
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem  # Store private key in key.pem
         chmod 400 key.pem
         ls -l
-        rsync -avz -e "ssh -p 2244 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i key.pem" code.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
+        rsync -avzrp -e "ssh -p 2244 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i key.pem" code.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
 
-
-
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
     - name: Deploy to Ubuntu server
       uses: appleboy/ssh-action@master
       with:
