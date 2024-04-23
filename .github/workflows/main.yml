@@ -20,7 +20,7 @@ jobs:
 
     - name: Set up environment variables
       run: |
-        #echo "CI=false" >> $GITHUB_ENV
+        echo "CI=false" >> $GITHUB_ENV
         echo "REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }}" >> $GITHUB_ENV
         ls -l && pwd
 
