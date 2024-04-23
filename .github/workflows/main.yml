@@ -26,7 +26,8 @@ jobs:
 
     - name: Install dependencies and build
       run: |
-        npm -v
+        npm install
+        npm run build
 
 
     - name: Zip & Rsync
