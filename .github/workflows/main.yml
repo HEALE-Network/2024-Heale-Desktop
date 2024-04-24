@@ -42,7 +42,7 @@ jobs:
         ls -l
         rsync -avzrp -e "ssh -p 2244 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i key.pem" * ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/ubuntu/2024-Heale-Desktop/
 
-    - name: Deploy to Ubuntu server
+    - name: Deploy Frontend
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
@@ -51,4 +51,6 @@ jobs:
         port: 2244
         script: |
           ls -l && pwd
+          cd /home/ubuntu/2024-Heale-Desktop/
+          pm2 start "npm run start"
           # npm install 
