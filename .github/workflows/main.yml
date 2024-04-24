@@ -36,7 +36,7 @@ jobs:
         ls -l && pwd
         # Wait for ongoing changes to finish (optional)
         sleep 5
-        zip -r code.zip --exclude=*.git --exclude=node_modules  *
+        zip -r code.zip --exclude=*.git --exclude=node_modules ../2024-Heale-Desktop
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem  # Store private key in key.pem
         chmod 400 key.pem
         ls -l
