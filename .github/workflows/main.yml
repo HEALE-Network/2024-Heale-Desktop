@@ -36,11 +36,11 @@ jobs:
         ls -l && pwd
         # Wait for ongoing changes to finish (optional)
         sleep 5
-        zip -r code.zip --exclude=*.git --exclude=node_modules ../2024-Heale-Desktop
+        #zip -r code.zip --exclude=*.git --exclude=node_modules ./*
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem  # Store private key in key.pem
         chmod 400 key.pem
         ls -l
-        rsync -avzrp -e "ssh -p 2244 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i key.pem" code.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/
+        rsync -avzrp -e "ssh -p 2244 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i key.pem" * ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/ubuntu/2024-Heale-Desktop/
 
     - name: Deploy to Ubuntu server
       uses: appleboy/ssh-action@master
@@ -51,7 +51,4 @@ jobs:
         port: 2244
         script: |
           ls -l && pwd
-          rm -rf /home/ubuntu/code/*
-          mv /tmp/code.zip /home/ubuntu/code/
-          unzip /home/ubuntu/code/code.zip
           # npm install 
