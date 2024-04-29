@@ -9,30 +9,17 @@ import 'App.css';
 import BusinessAccount from 'modules/onboarding/business/business-account';
 import Broker from 'modules/onboarding/business/broker';
 import Lender from 'modules/onboarding/business/lender';
-import Carrier from 'modules/onboarding/business/Carrier';
+import Carrier from 'modules/onboarding/business/carrier';
 import 'react-toastify/dist/ReactToastify.css';
 import BrowserExtension from "modules/browserExtension";
 import "App.css"
 import DashboardLayout from "modules/shared/DashboardLayout";
 import Dashboard from "modules/dashboard";
-import { ThirdwebProvider, embeddedWallet, smartWallet } from "@thirdweb-dev/react";
-import { PolygonAmoyTestnet } from "@thirdweb-dev/chains";
-
-const activeChain = PolygonAmoyTestnet;
+import Payment from "modules/Payment";
+import Transactions from 'modules/transactions';
 
 function App() {
   return (
-    <ThirdwebProvider
-      clientId={process.env.REACT_APP_CLIENT_ID}
-      activeChain={activeChain}
-      supportedWallets={[
-        smartWallet(embeddedWallet(), {
-          factoryAddress: "0x151bEcA4286F4Fbca74e862723ef52d345b5fA5C",
-          gasless: true,
-        }),
-      ]}
-    >
-      
     <ChakraProvider theme={theme}>
       <ToastContainer />
       <BrowserRouter>
@@ -48,12 +35,12 @@ function App() {
           </Route>
           <Route element={<DashboardLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="dashboard/transactions" element={<Transactions />} />
+            <Route path="dashboard/payments" element={<Payment />} />
           </Route>
         </Routes>
       </BrowserRouter>
     </ChakraProvider>
-    
-    </ThirdwebProvider>
   );
 }
 

@@ -51,13 +51,14 @@ export const SidebarNav = [
   {
     id: 1,
     title: 'Transactions',
-    link: '/',
+    link: '/dashboard/transactions',
     icon: TransactionIcon,
     hasDropdown: false,
   },
   {
     id: 2,
     title: 'Payments',
+    link: '/dashboard/payments',
     icon: PaymentIcon,
     hasDropdown: true,
     subItems: [
@@ -128,7 +129,7 @@ export const NotiData = [
     status: 'unread',
   },
   {
-    id: 0,
+    id: 1,
     title: 'Floyd Miles',
     desc: 'request a payment',
     time: '1 day ago',
