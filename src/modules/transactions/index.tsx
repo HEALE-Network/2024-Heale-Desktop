@@ -1,14 +1,35 @@
-import { Avatar, Badge, Box, Flex, Grid, GridItem, Heading, Icon, List, ListItem, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr, useOutsideClick } from '@chakra-ui/react'
+import { Avatar, Badge, Box, ComponentWithAs, Flex, Grid, GridItem, Heading, Icon, IconProps, Link, List, ListItem, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr, useDisclosure, useOutsideClick } from '@chakra-ui/react'
 import { filterData } from 'dummyData/data'
 import EmpltyTable from 'modules/Payment/component/EmptyTable'
 import ButtonTheme from 'modules/shared/ButtonTheme'
-import { AddIcon, CardIcon, ExportIcon, FilterIcon, FlyIcon, LeftArrow, StatementIcon } from 'modules/shared/Icons'
+import { AddIcon, CardIcon, ExportIcon, FilterIcon, FlyIcon, LeftArrow, RequestIcon, StatementIcon, SwitchIcon } from 'modules/shared/Icons'
 import Pagination from 'modules/shared/Pagination'
 import React, { useEffect, useRef, useState } from 'react'
 import DateFilter from './components/DateFilter'
+import KeywordsFilter from './components/KeywordsFilter'
+import AmountFilter from './components/AmountFilter'
+import MethodFilter from './components/MethodFilter'
+import CardsFilter from './components/CardsFilter'
+import AccountsFilter from './components/AccountsFilter'
+import CategoriesFilter from './components/CategoriesFilter'
+import StatusFilter from './components/StatusFilter'
+import TransactionDetailModal from './components/TransactionDetailModal'
+import { Link as LinkTo } from 'react-router-dom'
+
+interface ModalData {
+    icon: ComponentWithAs<'svg', IconProps>;
+    title: string;
+    account: string;
+}
 
 const Transactions = () => {
+    const { isOpen, onOpen, onClose } = useDisclosure()
     const [filter, setFilter] = useState(false)
+    const [modalData, setModalData] = useState<ModalData>({
+        icon: RequestIcon,
+        title: "Payment Request",
+        account: "Checking"
+    });
     const filterBox = useRef<HTMLDivElement>(null);
     const [selectedFilter, setSelectedFilter] = useState<number | null>(null);
 
@@ -32,26 +53,30 @@ const Transactions = () => {
             case 0:
                 return <DateFilter />;
             case 1:
-                return "Keywords";
+                return <KeywordsFilter />;
             case 2:
-                return "Amount";
+                return <AmountFilter />;
             case 3:
-                return "Method";
+                return <MethodFilter />;
             case 4:
-                return "Cards";
+                return <CardsFilter />;
             case 5:
-                return "Accounts";
+                return <AccountsFilter />;
             case 6:
-                return "Categories";
+                return <CategoriesFilter />;
             case 7:
-                return "Status";
+                return <StatusFilter />;
             default:
                 return null;
         }
     };
 
-    console.log(renderFilterComponent());
+    const handleOpenModal = ({ icon, title, account }: { icon: ComponentWithAs<'svg', IconProps>, title: string, account: string }) => {
+        setModalData({ icon, title, account });
+        onOpen();
+        console.log(modalData);
 
+    };
 
     return (
         <Box>
@@ -90,48 +115,58 @@ const Transactions = () => {
                                     ))}
                                 </List>
                             </GridItem>
-                            <GridItem px={6} py={4} colSpan={6}>
+                            <GridItem pos={"relative"} px={6} py={4} colSpan={6}>
                                 {selectedFilter !== null && renderFilterComponent()}
+                                <Flex pos={"absolute"} w={"90%"} bottom={6} alignItems={"center"} justifyContent={"space-between"}>
+                                    <Link as={"a"} color={"Primary.Blue"}>Clear</Link>
+                                    <ButtonTheme btnText='Apply' />
+                                </Flex>
                             </GridItem>
                         </Grid>
                     }
                 </Box>
                 <Flex gap={4} color={"Neutral.700"}>
-                    <Flex cursor={"pointer"} alignItems={"center"} gap={2}>
-                        <Text>View Statements</Text>
-                        <StatementIcon />
-                    </Flex>
+                    <LinkTo to={"/dashboard/transactions/statements"}>
+                        <Flex cursor={"pointer"} alignItems={"center"} gap={2}>
+                            <Text>View Statements</Text>
+                            <StatementIcon />
+                        </Flex>
+                    </LinkTo >
                     <Flex cursor={"pointer"} alignItems={"center"} gap={2}>
                         <Text>Export All</Text>
                         <ExportIcon />
                     </Flex>
                 </Flex>
             </Flex>
-            <TableContainer sx={{
-                "th": {
-                    color: "Neutral.700",
-                    fontSize: "sm",
-                    textTransform: "capitalize",
-                    fontWeight: "400"
-                },
-                // "tbody tr": {
-                //     "td:first-child": {
-                //         bgColor: "white"
-                //     },
-                //     "_hover": {
-                //         bgColor: "Neutral.200"
-                //     }
-                // },
-                "td": {
-                    color: "Primary.Navy",
-                    fontSize: "sm",
-                    textTransform: "capitalize",
-                    fontWeight: "600",
-                    ".chakra-badge": {
-                        textTransform: "capitalize"
+            <TableContainer
+                sx={{
+                    "th": {
+                        color: "Neutral.700",
+                        fontSize: "sm",
+                        textTransform: "capitalize",
+                        fontWeight: "400"
+                    },
+                    "tr": {
+                        cursor: "pointer"
+                    },
+                    // "tbody tr": {
+                    //     "td:first-child": {
+                    //         bgColor: "white"
+                    //     },
+                    //     "_hover": {
+                    //         bgColor: "Neutral.200"
+                    //     }
+                    // },
+                    "td": {
+                        color: "Primary.Navy",
+                        fontSize: "sm",
+                        textTransform: "capitalize",
+                        fontWeight: "600",
+                        ".chakra-badge": {
+                            textTransform: "capitalize"
+                        }
                     }
-                }
-            }}>
+                }}>
                 <Table variant='simple'>
                     <Thead>
                         <Tr>
@@ -144,7 +179,7 @@ const Transactions = () => {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        <Tr>
+                        <Tr onClick={() => handleOpenModal({ icon: FlyIcon, title: 'Wire Payment', account: "Checking" })}>
                             <Td rowSpan={2}>Jan 11</Td>
                             <Td>
                                 <Flex gap={2} alignItems={"center"}>
@@ -166,7 +201,7 @@ const Transactions = () => {
                             <Td><Text>$715.85 <Text as={"span"} color={"Neutral.700"}>USD</Text></Text></Td>
                             <Td><AddIcon w={5} h={5} /></Td>
                         </Tr>
-                        <Tr>
+                        <Tr onClick={() => handleOpenModal({ icon: FlyIcon, title: 'Wire Payment', account: "Checking" })}>
                             <Td>
                                 <Flex gap={2} alignItems={"center"}>
                                     <Avatar w={6} h={6} sx={{
@@ -187,7 +222,7 @@ const Transactions = () => {
                             <Td><Text>$715.85 <Text as={"span"} color={"Neutral.700"}>USD</Text></Text></Td>
                             <Td><AddIcon w={5} h={5} /></Td>
                         </Tr>
-                        <Tr>
+                        <Tr onClick={() => handleOpenModal({ icon: SwitchIcon, title: 'Transfer Details', account: "Checking" })}>
                             <Td rowSpan={2}>Jan 11</Td>
                             <Td>
                                 <Flex gap={2} alignItems={"center"}>
@@ -209,7 +244,7 @@ const Transactions = () => {
                             <Td><Text>$715.85 <Text as={"span"} color={"Neutral.700"}>USD</Text></Text></Td>
                             <Td><AddIcon w={5} h={5} /></Td>
                         </Tr>
-                        <Tr>
+                        <Tr onClick={() => handleOpenModal({ icon: RequestIcon, title: 'Payment Request', account: "Checking" })}>
                             <Td>
                                 <Flex gap={2} alignItems={"center"}>
                                     <Avatar w={6} h={6} sx={{
@@ -239,7 +274,9 @@ const Transactions = () => {
             </TableContainer>
             <Pagination currentPage='1' totalPage='4' totalElements='324' element='Transactions' />
             <EmpltyTable title='No current transactions' desc="When you have current transactions, they'll be listed here" />
-        </Box>
+            <TransactionDetailModal account={modalData?.account} icon={modalData?.icon}
+                title={modalData?.title} isOpen={isOpen} onClose={onClose} />
+        </Box >
     )
 }
 

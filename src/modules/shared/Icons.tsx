@@ -871,20 +871,13 @@ export const AddIcon = createIcon({
 
 export const RequestIcon = createIcon({
   displayName: "RequestIcon",
-  viewBox: "0 0 20 20",
+  viewBox: "0 0 19.571 19.571",
   path: (
-    <>
-      <defs>
-        <clipPath id="clip-path">
-          <rect id="Rectangle_23055" data-name="Rectangle 23055" width="20" height="20" fill="#fff" />
-        </clipPath>
-      </defs>
-      <g id="Group_40465" data-name="Group 40465" clipPath="url(#clip-path)">
-        <path id="Path_91505" data-name="Path 91505" d="M.715,15v1.429a2.857,2.857,0,0,0,2.857,2.857H16.429a2.857,2.857,0,0,0,2.857-2.857V15" fill="none" stroke="#03103d" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" />
-        <path id="Path_91506" data-name="Path 91506" d="M5.715,5.714,10,.714l4.286,5" fill="none" stroke="#03103d" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" />
-        <path id="Path_91507" data-name="Path 91507" d="M10,.714V13.571" fill="none" stroke="#03103d" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" />
-      </g>
-    </>
+    <g id="Group_40465" data-name="Group 40465" transform="translate(-0.215 -0.214)">
+      <path id="Path_91505" data-name="Path 91505" d="M.715,15v1.429a2.857,2.857,0,0,0,2.857,2.857H16.429a2.857,2.857,0,0,0,2.857-2.857V15" fill="none" stroke="#03103d" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+      <path id="Path_91506" data-name="Path 91506" d="M5.715,5.714,10,.714l4.286,5" fill="none" stroke="#03103d" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+      <path id="Path_91507" data-name="Path 91507" d="M10,.714V13.571" fill="none" stroke="#03103d" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+    </g>
   ),
 })
 
@@ -992,6 +985,53 @@ export const StatusIcon = createIcon({
     <g id="Group_40465" data-name="Group 40465" transform="translate(-0.213 -0.213)">
       <path id="Path_91505" data-name="Path 91505" d="M18.972,13.415l-5.557,5.557a1.072,1.072,0,0,1-1.514,0L.872,7.943a.514.514,0,0,1-.157-.414l.843-5.471a.529.529,0,0,1,.5-.5L7.529.715a.514.514,0,0,1,.414.157L18.972,11.9a1.072,1.072,0,0,1,0,1.514Z" fill="none" stroke="#03103d" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
       <path id="Path_91506" data-name="Path 91506" d="M5.872,6.587a.714.714,0,1,0-.714-.714A.714.714,0,0,0,5.872,6.587Z" fill="none" stroke="#03103d" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+    </g>
+  ),
+});
+
+export const ThreeDotsIcon = createIcon({
+  displayName: "ThreeDotsIcon",
+  viewBox: "0 0 19.571 5.286",
+  path: (
+    <g id="Group_40465" data-name="Group 40465" transform="translate(-0.214 -0.357)">
+      <path id="Path_91505" data-name="Path 91505" d="M17.143,5.143A2.143,2.143,0,1,0,15,3,2.143,2.143,0,0,0,17.143,5.143Z" fill="none" stroke="#9696b3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+      <path id="Path_91506" data-name="Path 91506" d="M10,5.143A2.143,2.143,0,1,0,7.857,3,2.143,2.143,0,0,0,10,5.143Z" fill="none" stroke="#9696b3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+      <path id="Path_91507" data-name="Path 91507" d="M2.857,5.143A2.143,2.143,0,1,0,.714,3,2.143,2.143,0,0,0,2.857,5.143Z" fill="none" stroke="#9696b3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+    </g>
+  ),
+});
+
+export const ClipBoardIcon = createIcon({
+  displayName: "ClipBoardIcon",
+  viewBox: "0 0 16.149 16.148",
+  path: (
+    <g id="Group_40465" data-name="Group 40465" transform="translate(-0.81 -1.043)">
+      <path id="Path_91505" data-name="Path 91505" d="M7.822,10.179a3.333,3.333,0,0,0,4.714,0l2.946-2.946a3.333,3.333,0,0,0-4.714-4.714L9,4.287" fill="none" stroke="#9696b3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+      <path id="Path_91506" data-name="Path 91506" d="M10.179,7.822a3.333,3.333,0,0,0-4.714,0L2.518,10.768a3.333,3.333,0,0,0,4.714,4.714L9,13.714" fill="none" stroke="#9696b3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+    </g>
+  ),
+});
+
+export const CloseIcon = createIcon({
+  displayName: "CloseIcon",
+  viewBox: "0 0 19.571 19.571",
+  path: (
+    <g id="Group_40465" data-name="Group 40465" transform="translate(-0.214 -0.215)">
+      <path id="Path_91505" data-name="Path 91505" d="M13.029,6.973,6.972,13.03" fill="none" stroke="#9696b3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+      <path id="Path_91506" data-name="Path 91506" d="M6.972,6.973l6.057,6.057" fill="none" stroke="#9696b3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+      <path id="Path_91507" data-name="Path 91507" d="M10,19.286A9.286,9.286,0,1,0,.714,10,9.286,9.286,0,0,0,10,19.286Z" fill="none" stroke="#9696b3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+    </g>
+  ),
+});
+
+export const CloudDownloadIcon = createIcon({
+  displayName: "CloudDownloadIcon",
+  viewBox: "0 0 19.833 18.166",
+  path: (
+    <g id="Group_40465" data-name="Group 40465" transform="translate(-0.082 -0.75)">
+      <path id="Path_91505" data-name="Path 91505" d="M6.665,13.167h-2.5a3.333,3.333,0,1,1,.864-6.554A4.631,4.631,0,0,1,5,6.083a4.584,4.584,0,0,1,9.025-1.135A4.167,4.167,0,1,1,15,13.167H13.332" fill="none" stroke="#9696b3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+      <path id="Path_91506" data-name="Path 91506" d="M10,9.834V16.5" fill="none" stroke="#9696b3" stroke-linecap="round" stroke-width="1.5" />
+      <path id="Path_91507" data-name="Path 91507" d="M12.5,15.666l-2.5,2.5-2.5-2.5" fill="none" stroke="#9696b3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
     </g>
   ),
 });
