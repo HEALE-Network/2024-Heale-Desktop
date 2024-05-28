@@ -1,4 +1,4 @@
-import { Box, Container, Flex, Grid, Heading, Icon, List, ListItem, Text, useRadio, useRadioGroup } from '@chakra-ui/react'
+import { Box, Container, Flex, Grid, Heading, Icon, List, ListItem, Text, useRadio, useRadioGroup, Button } from '@chakra-ui/react'
 import { options } from 'dummyData/data';
 import React from 'react'
 import { RadioCardProps } from 'type';
@@ -52,6 +52,19 @@ const Welcome = () => {
     saveAccountTypeToLocalStorage(radioValue);
     console.log(radioValue);
 
+    const handleTestApi = () => {
+        fetch("https://api-service.healelabs.com/api/v2/thirdweb_verification", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ payload: 2 }),
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error("Error:", error));
+    };
+
     return (
         <Container maxW={"80%"}>
             <Heading mb={4} as={"h4"} fontSize={"3xl"} color={"Primary.Navy"}>Welcome to HEALE</Heading>
@@ -75,6 +88,7 @@ const Welcome = () => {
                     {radioValue === "0" ?
                         <>
                             <Heading fontSize={"xl"} color={"Primary.Navy"} as={"h6"} mb={8}>Title goes here-Test</Heading>
+                            <Button onClick={handleTestApi} colorScheme="blue">Test API</Button>
                             <List spacing={8} color={"Primary.Navy"} fontSize={"sm"}>
                                 <ListItem display={"flex"} gap={3}>
                                     <CheckIcon w={5} h={5} />
