@@ -52,18 +52,7 @@ const Welcome = () => {
     saveAccountTypeToLocalStorage(radioValue);
     console.log(radioValue);
 
-    const handleTestApi = () => {
-        fetch("https://api-service.healelabs.com/api/v2/thirdweb_verification", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ payload: 2 }),
-        })
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error("Error:", error));
-    };
+    
 
     return (
         <Container maxW={"80%"}>
@@ -88,7 +77,7 @@ const Welcome = () => {
                     {radioValue === "0" ?
                         <>
                             <Heading fontSize={"xl"} color={"Primary.Navy"} as={"h6"} mb={8}>Title goes here-Test</Heading>
-                            <Button onClick={handleTestApi} colorScheme="blue">Test API</Button>
+                           
                             <List spacing={8} color={"Primary.Navy"} fontSize={"sm"}>
                                 <ListItem display={"flex"} gap={3}>
                                     <CheckIcon w={5} h={5} />
