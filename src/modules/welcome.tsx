@@ -76,7 +76,7 @@ const Welcome = () => {
                 <Flex flexDir={"column"} w={"80%"} marginLeft={"auto"}>
                     {radioValue === "0" ?
                         <>
-                            <Heading fontSize={"xl"} color={"Primary.Navy"} as={"h6"} mb={8}>Title goes here-Test</Heading>
+                            <Heading fontSize={"xl"} color={"Primary.Navy"} as={"h6"} mb={8}>Title goes here</Heading>
                            
                             <List spacing={8} color={"Primary.Navy"} fontSize={"sm"}>
                                 <ListItem display={"flex"} gap={3}>

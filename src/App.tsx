@@ -21,14 +21,32 @@ import Login from 'modules/login';
 import ForgotPassword from 'modules/forgot-password';
 import ResetCode from 'modules/reset-code';
 import ChangePassword from 'modules/change-password';
-
-
+import {
+  ThirdwebProvider,
+  smartWallet,
+  embeddedWallet,
+} from "@thirdweb-dev/react";
+import { PolygonAmoyTestnet } from "@thirdweb-dev/chains";
 import Statements from 'modules/transactions/statements';
 import ProtectedRoute from 'modules/onboarding/components/ProtectedRoute';
 import Heale from 'modules/heale';
 
+const activeChain = PolygonAmoyTestnet;
+
 function App() {
   return (
+    <ThirdwebProvider
+      clientId={process.env.REACT_APP_CLIENT_ID}
+      activeChain={activeChain}
+      supportedWallets={[
+        smartWallet(embeddedWallet(), {
+          factoryAddress: "0x151bEcA4286F4Fbca74e862723ef52d345b5fA5C",
+          gasless: true,
+        }),
+      ]}
+    >
+
+    
     <ChakraProvider theme={theme}>
       <ToastContainer />
       <BrowserRouter>
@@ -119,6 +137,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </ChakraProvider>
+    </ThirdwebProvider>
   );
 }
 

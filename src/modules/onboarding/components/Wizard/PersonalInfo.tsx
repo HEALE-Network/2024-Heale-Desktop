@@ -26,6 +26,14 @@ import {
   saveUserToLocalStorage,
 } from 'services/localStorage.sevice';
 import { toastSuccess, validatePasswords } from 'utils/helpers';
+import {
+  ThirdwebProvider,
+  smartWallet,
+  embeddedWallet,useConnect
+} from "@thirdweb-dev/react";
+import { inAppWallet } from "thirdweb/wallets";
+
+
 
 const PersonalInfo = () => {
   const [isAgreed, setIsAgreed] = useState(false);
@@ -71,6 +79,7 @@ const PersonalInfo = () => {
         `${response?.data?.token_type} ${response?.data?.access_token}`
       );
       saveUserToLocalStorage(response?.data?.user);
+      console.log(response?.data?.user);
       nextStep();
     }
   };
