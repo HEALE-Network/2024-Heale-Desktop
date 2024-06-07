@@ -15,6 +15,7 @@ export interface ButtonThemeType {
   chakraProps?: ButtonProps;
   invert?: boolean;
   primary?: boolean;
+  small?: boolean;
   isLoading?: boolean;
   isDisabled?: boolean;
 }
@@ -35,14 +36,19 @@ export interface MessageBoxType {
 }
 
 export interface VerificationBoxType {
-  title: string;
-  link: string;
   status?: boolean;
+  title: string;
+  onClick: () => void;
 }
+
 
 export interface ApplicationCollabType {
   onClose: () => void;
   isOpen: boolean;
+}
+
+export interface CardModalType extends ApplicationCollabType {
+  onOpenReset: () => void;
 }
 
 export interface TransactionDetailType extends ApplicationCollabType {

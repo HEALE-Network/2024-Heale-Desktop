@@ -1,4 +1,4 @@
-import { Box, Container, Flex, Grid, Heading, Icon, List, ListItem, Text, useRadio, useRadioGroup, Button } from '@chakra-ui/react'
+import { Box, Container, Flex, Grid, Heading, Icon, List, ListItem, Text, useRadio, useRadioGroup } from '@chakra-ui/react'
 import { options } from 'dummyData/data';
 import React from 'react'
 import { RadioCardProps } from 'type';
@@ -52,8 +52,6 @@ const Welcome = () => {
     saveAccountTypeToLocalStorage(radioValue);
     console.log(radioValue);
 
-    
-
     return (
         <Container maxW={"80%"}>
             <Heading mb={4} as={"h4"} fontSize={"3xl"} color={"Primary.Navy"}>Welcome to HEALE</Heading>
@@ -77,7 +75,6 @@ const Welcome = () => {
                     {radioValue === "0" ?
                         <>
                             <Heading fontSize={"xl"} color={"Primary.Navy"} as={"h6"} mb={8}>Title goes here</Heading>
-                           
                             <List spacing={8} color={"Primary.Navy"} fontSize={"sm"}>
                                 <ListItem display={"flex"} gap={3}>
                                     <CheckIcon w={5} h={5} />

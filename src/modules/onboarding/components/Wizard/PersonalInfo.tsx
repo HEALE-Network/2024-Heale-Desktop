@@ -21,19 +21,12 @@ import { useWizard } from 'react-use-wizard';
 import FormErrorMessage from 'modules/shared/FormErrorMessage';
 import { signUp } from 'services/auth.service';
 import {
+  getAccountTypeFromLocalStorage,
   getTokenFromLocalStorage,
   saveTokenToLocalStorage,
   saveUserToLocalStorage,
 } from 'services/localStorage.sevice';
 import { toastSuccess, validatePasswords } from 'utils/helpers';
-import {
-  ThirdwebProvider,
-  smartWallet,
-  embeddedWallet,useConnect
-} from "@thirdweb-dev/react";
-import { inAppWallet } from "thirdweb/wallets";
-
-
 
 const PersonalInfo = () => {
   const [isAgreed, setIsAgreed] = useState(false);
@@ -71,6 +64,7 @@ const PersonalInfo = () => {
       email,
       handle,
       password,
+      account_type: getAccountTypeFromLocalStorage(),
     };
     const response = await signUp(user);
     if (response?.status) {
@@ -79,7 +73,6 @@ const PersonalInfo = () => {
         `${response?.data?.token_type} ${response?.data?.access_token}`
       );
       saveUserToLocalStorage(response?.data?.user);
-      console.log("user data object" + response?.data?.user);
       nextStep();
     }
   };
@@ -188,9 +181,9 @@ const PersonalInfo = () => {
                     },
                     // validation for strong passwords
                     pattern: {
-                      value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+                      value: /^(?=.*\d)(?=.*[A-Z])(?=.*[@$!%*?&]).{12,}$/,
                       message:
-                        'Password should contain at least one uppercase letter, one lowercase letter, and one number',
+                        'Password should contain at least one uppercase letter, one number, and one symbol',
                     },
                   })}
                 />

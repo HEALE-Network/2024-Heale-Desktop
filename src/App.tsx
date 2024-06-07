@@ -9,7 +9,7 @@ import 'App.css';
 import BusinessAccount from 'modules/onboarding/business/business-account';
 import Broker from 'modules/onboarding/business/broker';
 import Lender from 'modules/onboarding/business/lender';
-import Carrier from 'modules/onboarding/business/carrier';
+import Carrier from 'modules/onboarding/business/Carrier';
 import 'react-toastify/dist/ReactToastify.css';
 import BrowserExtension from 'modules/browserExtension';
 import 'App.css';
@@ -21,32 +21,16 @@ import Login from 'modules/login';
 import ForgotPassword from 'modules/forgot-password';
 import ResetCode from 'modules/reset-code';
 import ChangePassword from 'modules/change-password';
-import {
-  ThirdwebProvider,
-  smartWallet,
-  embeddedWallet,
-} from "@thirdweb-dev/react";
-import { PolygonAmoyTestnet } from "@thirdweb-dev/chains";
+
+
 import Statements from 'modules/transactions/statements';
 import ProtectedRoute from 'modules/onboarding/components/ProtectedRoute';
 import Heale from 'modules/heale';
-
-const activeChain = PolygonAmoyTestnet;
+import StatementsHeale from 'modules/heale/statement';
+import Cards from 'modules/cards';
 
 function App() {
   return (
-    <ThirdwebProvider
-      clientId={process.env.REACT_APP_CLIENT_ID}
-      activeChain={activeChain}
-      supportedWallets={[
-        smartWallet(embeddedWallet(), {
-          factoryAddress: "0x151bEcA4286F4Fbca74e862723ef52d345b5fA5C",
-          gasless: true,
-        }),
-      ]}
-    >
-
-    
     <ChakraProvider theme={theme}>
       <ToastContainer />
       <BrowserRouter>
@@ -133,11 +117,26 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="dashboard/heale/statements"
+              element={
+                <ProtectedRoute>
+                  <StatementsHeale />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="dashboard/cards"
+              element={
+                <ProtectedRoute>
+                  <Cards />
+                </ProtectedRoute>
+              }
+            />
           </Route>
         </Routes>
       </BrowserRouter>
     </ChakraProvider>
-    </ThirdwebProvider>
   );
 }
 
