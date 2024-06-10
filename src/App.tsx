@@ -28,9 +28,24 @@ import ProtectedRoute from 'modules/onboarding/components/ProtectedRoute';
 import Heale from 'modules/heale';
 import StatementsHeale from 'modules/heale/statement';
 import Cards from 'modules/cards';
+import { ThirdwebProvider, embeddedWallet, smartWallet } from "@thirdweb-dev/react";
+import { PolygonAmoyTestnet } from "@thirdweb-dev/chains";
+
+const activeChain = PolygonAmoyTestnet;
 
 function App() {
   return (
+    <ThirdwebProvider
+    clientId={process.env.REACT_APP_CLIENT_ID}
+    activeChain={activeChain}
+    supportedWallets={[
+      smartWallet(embeddedWallet(), {
+        factoryAddress: "0x151bEcA4286F4Fbca74e862723ef52d345b5fA5C",
+        gasless: true
+        
+      }),
+    ]}
+  >
     <ChakraProvider theme={theme}>
       <ToastContainer />
       <BrowserRouter>
@@ -137,6 +152,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </ChakraProvider>
+    </ThirdwebProvider>
   );
 }
 

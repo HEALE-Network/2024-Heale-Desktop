@@ -73,6 +73,7 @@ const PersonalInfo = () => {
         `${response?.data?.token_type} ${response?.data?.access_token}`
       );
       saveUserToLocalStorage(response?.data?.user);
+      console.log("new user data object" , response?.data?.id);
       nextStep();
     }
   };
