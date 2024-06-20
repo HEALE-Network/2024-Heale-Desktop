@@ -28,6 +28,35 @@ export const validatePasswords = (password, confirm_password, setError) => {
   }
   return true;
 };
+export const calculateQuestions = (data) => {
+  if (!data) return null;
+
+  const totalQuestions = Object.keys(data).length;
+  const filledQuestions = Object.values(data).filter(value => {
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    } else {
+      return value !== null && value !== '';
+    }
+  }).length;
+
+  console.log(filledQuestions);
+
+  return { totalQuestions, filledQuestions };
+}
+
+
+export const updateQuestionsInfo = (data, setQuestions, type = "") => {
+  if (!data)
+    return null
+
+  const { filledQuestions, totalQuestions } = calculateQuestions(data)
+
+  setQuestions(prevState => ({
+    ...prevState,
+    [type]: { filled: filledQuestions, total: totalQuestions }
+  }));
+};
 
 /**
  * Formats a given year, month, and day into an ISO date string (YYYY-MM-DD).
@@ -39,7 +68,6 @@ export const validatePasswords = (password, confirm_password, setError) => {
  * @returns {string} The formatted date string in ISO format (YYYY-MM-DD).
  */
 export const formatDateToISO = (year, month, day) => {
-  return `${year}-${month < 10 ? `0${month}` : month}-${
-    day < 10 ? `0${day}` : day
-  }`;
+  return `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day
+    }`;
 };

@@ -3,7 +3,10 @@ import ButtonTheme from 'modules/shared/ButtonTheme';
 import React from 'react';
 import { VerificationBoxType } from 'type';
 
-const VerificationBox = ({ status, title, onClick }: VerificationBoxType) => {
+const VerificationBox = ({ status, title, onClick, questions }: VerificationBoxType) => {
+
+    let questionsInfo = questions[title.toLowerCase()];
+
     return (
         <Flex gap={8} flexDir='column' bgColor={"white"} borderRadius={8} p={4} border={"1px solid"} borderColor={"Neutral.200"}>
             {status ?
@@ -11,7 +14,7 @@ const VerificationBox = ({ status, title, onClick }: VerificationBoxType) => {
                 <Box w={"max-content"} border={"1px solid"} borderColor={"Neutral.600"} borderRadius={"40px"} py={1} px={2} color={"Neutral.600"}>Not Started</Box>}
             <Box>
                 <Heading fontSize={"sm"} color={"Primary.Navy"}>{title}</Heading>
-                <Text fontSize={"sm"} color={"Neutral.700"}>0 / 5 questions completed</Text>
+                <Text fontSize={"sm"} color={"Neutral.700"}>{`${questionsInfo.filled} / ${questionsInfo.total}`} questions completed</Text>
             </Box>
             <ButtonTheme primary btnText={!status ? 'Start' : 'Edit'} chakraProps={{
                 fontSize: "sm",

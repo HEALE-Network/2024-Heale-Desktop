@@ -35,12 +35,19 @@ export interface MessageBoxType {
   handleClick?: () => void;
 }
 
+type questionProps = {
+  [key: string]: {
+    filled: number;
+    total: number;
+  };
+};
+
 export interface VerificationBoxType {
   status?: boolean;
   title: string;
+  questions: questionProps;
   onClick: () => void;
 }
-
 
 export interface ApplicationCollabType {
   onClose: () => void;
@@ -49,6 +56,13 @@ export interface ApplicationCollabType {
 
 export interface CardModalType extends ApplicationCollabType {
   onOpenReset: () => void;
+  onOpenLostDamage: () => void;
+  onOpenEditName: () => void;
+  onOpenActiveCard: () => void;
+}
+
+export interface CreateCardModalType extends ApplicationCollabType {
+  onOpenActiveCard: () => void;
 }
 
 export interface TransactionDetailType extends ApplicationCollabType {

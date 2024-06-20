@@ -1,12 +1,23 @@
-import { Badge, Box, Flex, Heading, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { Badge, Box, Flex, Heading, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr, useDisclosure } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import CardDetailModal from './components/CardDetailModal';
 import ResetCardPinModal from './components/ResetCardPinModal';
 import { CardIcon } from 'modules/shared/Icons';
+import LostDamagedCardModal from './components/LostDamagedCardModal';
+import EditNameModal from './components/EditNameModal';
+import ActivateCardModal from './components/ActivateCardModal';
+import ButtonTheme from 'modules/shared/ButtonTheme';
+import { getUserFromLocalStorage } from 'services/localStorage.sevice';
+import CreateCardModal from './components/CreateCardModal';
 
 const Cards = () => {
+    const { isOpen: isOpenCreateCardModal, onOpen: onOpenCreateCardModal, onClose: onCloseCreateCardModal } = useDisclosure()
+
     const [isCardModalOpen, setCardModalOpen] = useState(false);
     const [isResetModalOpen, setResetModalOpen] = useState(false);
+    const [isLostDamageModalOpen, setLostDamageModalOpen] = useState(false);
+    const [isEditNameModalOpen, setEditNameModalOpen] = useState(false);
+    const [isActivateCardModalOpen, setActivateCardModalOpen] = useState(false);
 
     const openCardModal = () => {
         setCardModalOpen(true);
@@ -26,11 +37,48 @@ const Cards = () => {
         setCardModalOpen(true);
     };
 
+    const closeLostDamageModal = () => {
+        setLostDamageModalOpen(false);
+        setCardModalOpen(true);
+    };
+
+    const openLostDamageModal = () => {
+        setLostDamageModalOpen(true);
+        setCardModalOpen(false);
+    }
+
+    const closeEditNameModal = () => {
+        setEditNameModalOpen(false);
+        setCardModalOpen(true);
+    };
+
+    const openEditNameModal = () => {
+        setEditNameModalOpen(true);
+        setCardModalOpen(false);
+    };
+
+    const closeActivateCardModal = () => {
+        setActivateCardModalOpen(false);
+        setCardModalOpen(true);
+    };
+
+    const openActivateCardModal = () => {
+        setActivateCardModalOpen(true);
+        setCardModalOpen(false);
+    };
+
     return (
         <Box>
-            <Heading fontSize={"3xl"}>
-                Cards
-            </Heading>
+            <Flex justifyContent={"space-between"} alignItems={"center"}>
+                <Heading fontSize={"3xl"}>
+                    Cards
+                </Heading>
+                {getUserFromLocalStorage()?.default_profile?.account_type === "Personal" ? "" :
+                    <ButtonTheme btnText='Create Card' chakraProps={{
+                        onClick: onOpenCreateCardModal
+                    }} primary />
+                }
+            </Flex>
             <TableContainer mt={6}
                 sx={{
                     "th": {
@@ -102,8 +150,12 @@ const Cards = () => {
                     </Tbody>
                 </Table>
             </TableContainer>
-            <CardDetailModal isOpen={isCardModalOpen} onClose={closeCardModal} onOpenReset={openResetModal} />
+            <CardDetailModal isOpen={isCardModalOpen} onClose={closeCardModal} onOpenReset={openResetModal} onOpenLostDamage={openLostDamageModal} onOpenEditName={openEditNameModal} onOpenActiveCard={openActivateCardModal} />
             <ResetCardPinModal isOpen={isResetModalOpen} onClose={closeResetModal} />
+            <LostDamagedCardModal isOpen={isLostDamageModalOpen} onClose={closeLostDamageModal} />
+            <EditNameModal isOpen={isEditNameModalOpen} onClose={closeEditNameModal} />
+            <ActivateCardModal isOpen={isActivateCardModalOpen} onClose={closeActivateCardModal} />
+            <CreateCardModal isOpen={isOpenCreateCardModal} onOpenActiveCard={openActivateCardModal} onClose={onCloseCreateCardModal} />
         </Box>
     )
 }
