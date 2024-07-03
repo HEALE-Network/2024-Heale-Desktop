@@ -11,6 +11,7 @@ import {
   InputRightElement,
   Link,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import useToggle from 'hooks/useToggle';
@@ -27,8 +28,10 @@ import {
   saveUserToLocalStorage,
 } from 'services/localStorage.sevice';
 import { toastSuccess, validatePasswords } from 'utils/helpers';
+import TermsModal from '../TermsModal';
 
 const PersonalInfo = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const [isAgreed, setIsAgreed] = useState(false);
   const [statePass, togglePass] = useToggle(false);
   const [stateCPass, toggleCPass] = useToggle(false);
@@ -76,7 +79,7 @@ const PersonalInfo = () => {
   };
 
   return (
-    <Box w={'50%'}>
+    <Box w={{ lg: '50%', md: "60%", base: "100%" }}>
       <Heading as={'h4'} mb={4} fontSize={'3xl'} color={'Primary.Navy'}>
         Create an account
       </Heading>
@@ -231,7 +234,7 @@ const PersonalInfo = () => {
               onChange={(e) => setIsAgreed(e.target.checked)}
             >
               I agree to the{' '}
-              <Link color="Primary.Blue"> Terms & Conditions</Link>, and I have
+              <Link color="Primary.Blue" onClick={() => onOpen()}> Terms & Conditions</Link>, and I have
               read the <Link color="Primary.Blue"> Privacy Policy</Link>.
             </Checkbox>
             <ButtonTheme
@@ -250,6 +253,7 @@ const PersonalInfo = () => {
           </Grid>
         </form>
       </Box>
+      <TermsModal isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 };
