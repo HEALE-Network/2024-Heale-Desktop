@@ -45,19 +45,19 @@ const BusinessInfo = () => {
     accountAbstraction: {
       chain: polygonAmoy,
       sponsorGas: true,
-      factoryAddress:"0x151bEcA4286F4Fbca74e862723ef52d345b5fA5C"
+      factoryAddress: process.env.FACTORY_ADDRESS
     },
   });
   
   const adminAccount = privateKeyToAccount({
     client,
-    privateKey: "971131fffa0d661b98a90ab8fc7463af98c867b829630a3df1b4d9b981c6f042" as Address,
+    privateKey: process.env.ADMIN_WALLET_KEY as Address,
   });
  
   const contract = getContract({ 
     client, 
     chain: polygonAmoy, 
-    address: "0xD3e9c78c03732755F281fc8cD01805c29f2EaaF6"
+    address: process.env.CONTRACT_ADDRESS
   });
 
   const handlePostLogin = async (userId: string) => {
