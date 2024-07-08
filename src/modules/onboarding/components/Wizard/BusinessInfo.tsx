@@ -28,10 +28,83 @@ import {
 import { toastSuccess } from 'utils/helpers';
 import { getAccountTypeFromLocalStorage } from 'services/localStorage.sevice';
 import { useBusiness } from 'context/BusinessContext';
+import { useConnect, useSendTransaction, useSetActiveWallet } from "thirdweb/react";
+import { inAppWallet, privateKeyToAccount, createWallet } from "thirdweb/wallets";
+import { client } from "../../../../twclient";
+
+import { polygonAmoy } from "thirdweb/chains";
+
+import { Address, prepareContractCall, sendAndConfirmTransaction ,getContract } from "thirdweb";
 
 const BusinessInfo = () => {
   const { nextStep, previousStep } = useWizard();
   const { getRootProps, getInputProps } = useDropzone();
+
+  const { connect } = useConnect({
+    client: client,
+    accountAbstraction: {
+      chain: polygonAmoy,
+      sponsorGas: true,
+      factoryAddress: process.env.FACTORY_ADDRESS
+    },
+  });
+  
+  const adminAccount = privateKeyToAccount({
+    client,
+    privateKey: process.env.ADMIN_WALLET_KEY as Address,
+  });
+ 
+  const contract = getContract({ 
+    client, 
+    chain: polygonAmoy, 
+    address: process.env.CONTRACT_ADDRESS
+  });
+
+  const handlePostLogin = async (userId: string) => {
+    console.log("Sending userId to thirdweb:", userId); // Log the userId being sent
+    const wallet = await connect(async () => {
+      const wallet = inAppWallet();
+      await wallet.connect({
+        client: client,
+        strategy: "auth_endpoint",
+        payload: userId.toString(), // Ensure userId is a string
+        encryptionKey: "Test", // Leave blank for now
+      });
+      console.log("NEW WALLET ADDRESS", wallet.getAccount()?.address);
+      return wallet;
+    });
+    // Call mintIdentityNFT with the new wallet address
+    const walletAddress = wallet?.getAccount()?.address;
+    if (walletAddress) {
+      await mintIdentityNFT(walletAddress, parseInt(userId, 10));
+    }
+    
+    return wallet;
+    
+  };
+
+
+  const mintIdentityNFT = async (toAddress: string, userId: number) => {
+    
+  
+      const tx = await prepareContractCall({
+        contract,
+        method: "function mintTo(address to, uint256 tokenId)",
+        params: [toAddress as `0x${string}`, BigInt(userId)]
+      });
+
+      try {
+        await sendAndConfirmTransaction({
+          transaction: tx,
+          account: adminAccount,
+        });
+        console.log("Identity NFT minted successfully", tx);
+      } catch (error) {
+        console.error(error);
+      }
+  
+    
+  };
 
   const {
     register,
@@ -78,7 +151,10 @@ const BusinessInfo = () => {
     };
     const response = await saveUserBusiness(userBusiness);
     if (response?.status) {
+      console.log("Response Data:", response.data);
       toastSuccess(response?.data?.message);
+      const userId = response?.data?.id;
+      await handlePostLogin(userId.toString());
       nextStep();
     }
   };
