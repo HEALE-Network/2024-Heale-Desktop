@@ -43,7 +43,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "install-with-deps": "npm install && npm install react-scripts@latest && npm install typescript@latest",
+    "install-with-deps": "npm install && npm install react-scripts@latest && npm install typescript@latest && npm install thirdweb --legacy-peer-deps",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
