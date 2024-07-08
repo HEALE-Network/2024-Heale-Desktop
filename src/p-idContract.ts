@@ -5,6 +5,6 @@ export function getPIDContract(client: any) {
   return getContract({ 
     client, 
     chain: polygonAmoy, 
-    address: process.env.PID
+    address: process.env.REACT_APP_PID ?? ''
   });
 }

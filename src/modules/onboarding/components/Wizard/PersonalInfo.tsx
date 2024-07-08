@@ -48,19 +48,19 @@ const PersonalInfo = () => {
     accountAbstraction: {
       chain: polygonAmoy,
       sponsorGas: true,
-      factoryAddress: process.env.FACTORY_ADDRESS
+      factoryAddress: process.env.REACT_APP_FACTORY_ADDRESS
     },
   });
   
   const adminAccount = privateKeyToAccount({
     client,
-    privateKey: process.env.ADMIN_WALLET_KEY as Address,
+    privateKey: process.env.REACT_APP_ADMIN_WALLET_KEY as Address,
   });
  
   const contract = getContract({ 
     client, 
     chain: polygonAmoy, 
-    address: process.env.CONTRACT_ADDRESS
+    address: process.env.REACT_APP_CONTRACT_ADDRESS ?? ''
   });
 
  
