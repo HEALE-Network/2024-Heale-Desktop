@@ -27,8 +27,7 @@ jobs:
 
     - name: Install dependencies and build
       run: |
-        npm install
-        npm install thirdweb --legacy-peer-deps
+        npm run install-with-deps
         npm run build
 
 
