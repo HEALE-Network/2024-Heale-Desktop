@@ -5,7 +5,7 @@ export async function getAdminWallet() {
     
     const wallet = privateKeyToAccount({
         client,
-        privateKey: process.env.ADMIN_WALLET_KEY,
+        privateKey: process.env.REACT_APP_ADMIN_WALLET_KEY ?? '',
       });
    
     return wallet;
