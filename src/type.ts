@@ -18,6 +18,7 @@ export interface ButtonThemeType {
   small?: boolean;
   isLoading?: boolean;
   isDisabled?: boolean;
+  onClick?: () => void;
 }
 
 export interface CountryInputType {
@@ -124,3 +125,4 @@ export interface approval_table_rows {
 export interface EmptyTable {
   emptyMesg: string;
 }
+

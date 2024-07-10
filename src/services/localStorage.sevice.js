@@ -22,6 +22,11 @@ export const removeUserFromLocalStorage = () => {
   localStorage.removeItem('user');
 };
 
+export const removeStepFromLocalStorage = () => {
+  localStorage.removeItem("onboardingStep");
+};
+
+
 export const saveAccountTypeToLocalStorage = (accountType) => {
   localStorage.setItem(
     'accountType',
