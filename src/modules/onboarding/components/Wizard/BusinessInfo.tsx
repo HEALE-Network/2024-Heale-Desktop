@@ -151,10 +151,7 @@ const BusinessInfo = () => {
     };
     const response = await saveUserBusiness(userBusiness);
     if (response?.status) {
-      console.log("Response Data:", response.data);
       toastSuccess(response?.data?.message);
-      const userId = response?.data?.id;
-      await handlePostLogin(userId.toString());
       nextStep();
     }
   };
