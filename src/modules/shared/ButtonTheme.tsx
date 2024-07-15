@@ -10,8 +10,7 @@ const ButtonTheme = ({
   small,
   isLoading,
   isDisabled,
-  onClick
-  
+  onClick,
 }: ButtonThemeType) => {
   return (
     <Button
@@ -47,4 +46,3 @@ const ButtonTheme = ({
 };
 
 export default ButtonTheme;
-
