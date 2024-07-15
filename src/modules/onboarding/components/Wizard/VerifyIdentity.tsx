@@ -49,6 +49,7 @@ const VerifyIdentity = () => {
     formState: { errors, isSubmitting },
   } = useForm();
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [ssn, setSSN] = useState('');
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const values: string[] = Array.from(
@@ -59,12 +60,29 @@ const VerifyIdentity = () => {
     setValue('heal_usage', values); // Manually update the value for react-hook-form
   };
 
+  const formatSSN = (value: any) => {
+    const digits = value.replace(/\D/g, '').slice(0, 9);
+    const formatted = digits
+      .replace(/(\d{3})(\d{2})(\d{4})/, '$1-$2-$3')
+      .replace(/(\d{3})(\d{2})(\d{0,4})/, '$1-$2-$3');
+    return formatted;
+
+  };
+
   // Destructure and omit 'onChange' from register output
   const { onChange, ref, ...rest } = register('heal_usage', {
     required: 'This field is required',
   });
 
-  console.log('errors', errors);
+  const {
+    onChange: ssnOnChange,
+    ref: ssnRef,
+    ...ssnRest
+  } = register('ssn', {
+    required: 'This field is required',
+    validate: (value) =>
+      value.replace(/\D/g, '').length === 9 || 'SSN must be exactly 9 digits',
+  });
 
   const onSubmit = async (values: any) => {
     const {
@@ -131,7 +149,12 @@ const VerifyIdentity = () => {
       >
         {' '}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid mb={6} gridTemplateColumns={{ lg: 'repeat(3,1fr)', base: 'repeat(1,1fr)' }} gap={{ lg: 6, base: 0 }} rowGap={{ lg: 0, base: 6 }}>
+          <Grid
+            mb={6}
+            gridTemplateColumns={{ lg: 'repeat(3,1fr)', base: 'repeat(1,1fr)' }}
+            gap={{ lg: 6, base: 0 }}
+            rowGap={{ lg: 0, base: 6 }}
+          >
             <FormControl>
               <FormLabel htmlFor="legal_first_name">Legal First Name</FormLabel>
               <Input
@@ -190,7 +213,12 @@ const VerifyIdentity = () => {
               </FormErrorMessage>
             </FormControl>
           </Grid>
-          <Grid mb={6} gridTemplateColumns={{ lg: 'repeat(3,1fr)', base: 'repeat(1,1fr)' }} gap={{ lg: 6, base: 0 }} rowGap={{ lg: 0, base: 6 }}>
+          <Grid
+            mb={6}
+            gridTemplateColumns={{ lg: 'repeat(3,1fr)', base: 'repeat(1,1fr)' }}
+            gap={{ lg: 6, base: 0 }}
+            rowGap={{ lg: 0, base: 6 }}
+          >
             <GridItem colSpan={2}>
               <FormControl>
                 <FormLabel htmlFor="dob">Date of birth</FormLabel>
@@ -274,7 +302,12 @@ const VerifyIdentity = () => {
               <FormErrorMessage message={errors?.source_of_funds?.message} />
             </FormControl>
           </Grid>
-          <Grid mb={6} gridTemplateColumns={{ lg: 'repeat(3,1fr)', base: 'repeat(1,1fr)' }} gap={{ lg: 6, base: 0 }} rowGap={{ lg: 0, base: 6 }}>
+          <Grid
+            mb={6}
+            gridTemplateColumns={{ lg: 'repeat(3,1fr)', base: 'repeat(1,1fr)' }}
+            gap={{ lg: 6, base: 0 }}
+            rowGap={{ lg: 0, base: 6 }}
+          >
             <GridItem colSpan={2}>
               <FormControl>
                 <FormLabel htmlFor="">Street address</FormLabel>
@@ -371,13 +404,19 @@ const VerifyIdentity = () => {
                   isInvalid={errors?.ssn?.message ? true : false}
                   errorBorderColor="Secondary.Red"
                   placeholder="(123-45-6789)"
-                  {...register('ssn', {
-                    required: 'This field is required',
-                    pattern: {
-                      value: /^\d{9}$/,
-                      message: 'SSN must be exactly 9 digits',
-                    },
-                  })}
+                  value={ssn}
+                  onChange={(event) => {
+                    const formattedSSN = formatSSN(event.target.value);
+                    setSSN(formattedSSN);
+                    ssnOnChange({
+                      target: {
+                        name: 'ssn',
+                        value: formattedSSN,
+                      },
+                    });
+                  }}
+                  ref={ssnRef}
+                  {...ssnRest}
                 />
                 <FormErrorMessage message={errors?.ssn?.message} />
               </FormControl>

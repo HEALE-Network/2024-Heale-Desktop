@@ -37,7 +37,7 @@ import { polygonAmoy } from "thirdweb/chains";
 import { Address, prepareContractCall, sendAndConfirmTransaction ,getContract } from "thirdweb";
 import TermsModal from '../TermsModal';
 
-const PersonalInfo = () => {
+const PersonalInfo = ({type='personal'}) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [isAgreed, setIsAgreed] = useState(false);
   const [statePass, togglePass] = useToggle(false);
@@ -238,7 +238,7 @@ const PersonalInfo = () => {
               <FormErrorMessage message={errors?.email?.message} />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="handle">@ Handle</FormLabel>
+              <FormLabel htmlFor="handle">{type === 'business' ? 'Business Handle' : '@Handle'}</FormLabel>
               <Input
                 type="text"
                 isInvalid={errors?.handle?.message ? true : false}

@@ -28,49 +28,65 @@ import {
 import { toastSuccess } from 'utils/helpers';
 import { getAccountTypeFromLocalStorage } from 'services/localStorage.sevice';
 import { useBusiness } from 'context/BusinessContext';
-import { useConnect, useSendTransaction, useSetActiveWallet } from "thirdweb/react";
-import { inAppWallet, privateKeyToAccount, createWallet } from "thirdweb/wallets";
-import { client } from "../../../../twclient";
+import {
+  useConnect,
+  useSendTransaction,
+  useSetActiveWallet,
+} from 'thirdweb/react';
+import {
+  inAppWallet,
+  privateKeyToAccount,
+  createWallet,
+} from 'thirdweb/wallets';
+import { client } from '../../../../twclient';
 
-import { polygonAmoy } from "thirdweb/chains";
+import { polygonAmoy } from 'thirdweb/chains';
 
-import { Address, prepareContractCall, sendAndConfirmTransaction ,getContract } from "thirdweb";
+import {
+  Address,
+  prepareContractCall,
+  sendAndConfirmTransaction,
+  getContract,
+} from 'thirdweb';
+import { useState } from 'react';
 
 const BusinessInfo = () => {
   const { nextStep, previousStep } = useWizard();
   const { getRootProps, getInputProps } = useDropzone();
+  const [employerIdentificationNumber, setEmployerIdentificationNumber] =
+    useState('');
 
   const { connect } = useConnect({
     client: client,
     accountAbstraction: {
       chain: polygonAmoy,
       sponsorGas: true,
-      factoryAddress: process.env.REACT_APP_FACTORY_ADDRESS
+      factoryAddress: process.env.REACT_APP_FACTORY_ADDRESS,
     },
   });
-  
+
   const adminAccount = privateKeyToAccount({
     client,
     privateKey: process.env.REACT_APP_ADMIN_WALLET_KEY as Address,
   });
- 
-  const contract = getContract({ 
-    client, 
-    chain: polygonAmoy, 
-    address: process.env.REACT_APP_CONTRACT_ADDRESS ?? ''
+
+  const contract = getContract({
+    client,
+    chain: polygonAmoy,
+    address: process.env.REACT_APP_CONTRACT_ADDRESS ?? '',
   });
 
   const handlePostLogin = async (userId: string) => {
-    console.log("Sending userId to thirdweb:", userId); // Log the userId being sent
+    console.log('Sending userId to thirdweb:', userId); // Log the userId being sent
     const wallet = await connect(async () => {
       const wallet = inAppWallet();
       await wallet.connect({
         client: client,
-        strategy: "auth_endpoint",
+        strategy: 'auth_endpoint',
         payload: userId.toString(), // Ensure userId is a string
-        encryptionKey: "Test", // Leave blank for now
+        encryptionKey: 'Test', // Leave blank for now
       });
-      console.log("NEW WALLET ADDRESS", wallet.getAccount()?.address);
+      console.log('NEW WALLET ADDRESS', wallet.getAccount()?.address);
       return wallet;
     });
     // Call mintIdentityNFT with the new wallet address
@@ -78,32 +94,34 @@ const BusinessInfo = () => {
     if (walletAddress) {
       await mintIdentityNFT(walletAddress, parseInt(userId, 10));
     }
-    
+
     return wallet;
-    
   };
 
-
   const mintIdentityNFT = async (toAddress: string, userId: number) => {
-    
-  
-      const tx = await prepareContractCall({
-        contract,
-        method: "function mintTo(address to, uint256 tokenId)",
-        params: [toAddress as `0x${string}`, BigInt(userId)]
-      });
+    const tx = await prepareContractCall({
+      contract,
+      method: 'function mintTo(address to, uint256 tokenId)',
+      params: [toAddress as `0x${string}`, BigInt(userId)],
+    });
 
-      try {
-        await sendAndConfirmTransaction({
-          transaction: tx,
-          account: adminAccount,
-        });
-        console.log("Identity NFT minted successfully", tx);
-      } catch (error) {
-        console.error(error);
-      }
-  
-    
+    try {
+      await sendAndConfirmTransaction({
+        transaction: tx,
+        account: adminAccount,
+      });
+      console.log('Identity NFT minted successfully', tx);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const formatEIN = (value: any) => {
+    const digits = value.replace(/\D/g, '').slice(0, 9);
+    const formatted = digits
+      .replace(/(\d{2})(\d{7})/, '$1-$2')
+      .replace(/(\d{2})(\d{0,7})/, '$1-$2');
+    return formatted;
   };
 
   const {
@@ -122,6 +140,15 @@ const BusinessInfo = () => {
     console.log(values);
     setBusinessTypes(values);
   };
+  const {
+    onChange: einOnChange,
+    ref: einRef,
+    ...einRest
+  } = register('employer_identification_number', {
+    required: 'This field is required',
+    validate: (value) =>
+      value.replace(/\D/g, '').length === 9 || 'EIN must be exactly 9 digits',
+  });
 
   const { onChange, ref, ...rest } = register('type', {
     required: 'This field is required',
@@ -157,7 +184,7 @@ const BusinessInfo = () => {
   };
 
   return (
-    <Box w={{ lg: '50%', md: "60%", base: "100%" }}>
+    <Box w={{ lg: '50%', md: '60%', base: '100%' }}>
       <Heading as={'h4'} mb={4} fontSize={'3xl'} color={'Primary.Navy'}>
         Create an account
       </Heading>
@@ -187,18 +214,25 @@ const BusinessInfo = () => {
                 }
                 errorBorderColor="Secondary.Red"
                 placeholder="XX-XXXXXXX"
-                {...register('employer_identification_number', {
-                  required: 'This field is required',
-                  pattern: {
-                    value: /^\d{2}-\d{7}$/,
-                    message: 'EIN must be in the format XX-XXXXXXX',
-                  },
-                })}
+                value={employerIdentificationNumber}
+                onChange={(event) => {
+                  const formattedEIN = formatEIN(event.target.value);
+                  setEmployerIdentificationNumber(formattedEIN);
+                  einOnChange({
+                    target: {
+                      name: 'employer_identification_number',
+                      value: formattedEIN,
+                    },
+                  });
+                }}
+                ref={einRef}
+                {...einRest}
               />
               <FormErrorMessage
                 message={errors?.employer_identification_number?.message}
               />
             </FormControl>
+
             <FormControl>
               <FormLabel>Legal Name</FormLabel>
               <Input
@@ -460,7 +494,7 @@ const BusinessInfo = () => {
               <FormLabel>Website</FormLabel>
               <Input
                 type="text"
-                placeholder="Enter name"
+                placeholder="Enter website address"
                 {...register('business_website')}
               />
             </FormControl>
