@@ -18,6 +18,7 @@ import ButtonTheme from 'modules/shared/ButtonTheme';
 import { useWizard } from 'react-use-wizard';
 import MessageBox from '../MessageBox';
 import {
+  CrossIcon,
   OfficeIcon,
   PersonalIcon,
   VerifyBusinessIcon,
@@ -31,9 +32,12 @@ import {
   states,
 } from 'utils/constants';
 import { formatDateToISO, toastSuccess } from 'utils/helpers';
-import { getAccountTypeFromLocalStorage } from 'services/localStorage.sevice';
+import { getAccountTypeFromLocalStorage, setFieldValueToLocalStorage } from 'services/localStorage.sevice';
 import { saveProfile } from 'services/user.service';
 import { useEffect, useState } from 'react';
+import { MultiSelect } from 'react-multi-select-component';
+import { ServiceOption } from 'modules/onboarding/business/broker';
+import useFormLocalStorage from 'hooks/useFormLocalStorage';
 
 interface Country {
   value: string;
@@ -41,24 +45,9 @@ interface Country {
 }
 
 const VerifyIdentity = () => {
-  const { nextStep, previousStep } = useWizard();
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors, isSubmitting },
-  } = useForm();
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [selected, setSelected] = useState([]);
+  const [countriesError, setCountriesError] = useState<any>(null);
   const [ssn, setSSN] = useState('');
-
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const values: string[] = Array.from(
-      event.target.selectedOptions,
-      (option) => option.value
-    );
-    setSelectedCountries(values);
-    setValue('heal_usage', values); // Manually update the value for react-hook-form
-  };
 
   const formatSSN = (value: any) => {
     const digits = value.replace(/\D/g, '').slice(0, 9);
@@ -69,26 +58,47 @@ const VerifyIdentity = () => {
 
   };
 
-  // Destructure and omit 'onChange' from register output
-  const { onChange, ref, ...rest } = register('heal_usage', {
-    required: 'This field is required',
-  });
+  const customValueRenderer = (
+    selected: ServiceOption[],
+    handleRemove: (option: ServiceOption) => void
+  ) => {
+    return selected.length ? (
+      selected.map(({ label, value }) => (
+        <Text color={"Primary.Blue"} bgColor={"Neutral.100"} py={1} px={2} borderRadius={40} fontSize={"xs"} cursor={"pointer"} display={"inline-flex"} key={value} alignItems={"center"} gap={1} mr={1}>
+          {label}
+          <CrossIcon w={2} h={2}
+            onClick={() => handleRemove({ label, value })}
+          />
+        </Text>
+      ))
+    ) : (
+      <span>No Items Selected</span>
+    );
+  };
 
+  const handleRemove = (optionToRemove: ServiceOption) => {
+    // const updatedServices = formData.services.filter(value => value !== optionToRemove.value);
+    // setFormData({ ...formData, services: updatedServices });
+  };
+  const { nextStep, previousStep } = useWizard();
   const {
-    onChange: ssnOnChange,
-    ref: ssnRef,
-    ...ssnRest
-  } = register('ssn', {
-    required: 'This field is required',
-    validate: (value) =>
-      value.replace(/\D/g, '').length === 9 || 'SSN must be exactly 9 digits',
-  });
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+
 
   const onSubmit = async (values: any) => {
+    if(selected.length === 0){
+      setCountriesError('Atleast one country is required');
+      return;
+    }
     const {
       legal_first_name,
       legal_last_name,
-      heal_usage,
       citizenship,
       source_of_funds,
       employment_status,
@@ -103,8 +113,11 @@ const VerifyIdentity = () => {
       address_2,
     } = values;
     const formattedDob = formatDateToISO(day, month, year);
-    // Convert the heal_usage array to a JSON string
-    const healUsageJson = JSON.stringify(heal_usage);
+    
+    const valuesArray = selected.map((item: any) => item.value);
+
+    // Stringify the array of values
+    const healUsageJson = JSON.stringify(valuesArray);
     const userProfile = {
       account_type: getAccountTypeFromLocalStorage(),
       legal_first_name,
@@ -127,6 +140,38 @@ const VerifyIdentity = () => {
       nextStep();
     }
   };
+
+  const { handleChange, getInitialValues } = useFormLocalStorage('verifyIdentity', setValue);
+
+  // Initialize form values from localStorage
+  useEffect(() => {
+    const initialValues = getInitialValues();
+    Object.keys(initialValues).forEach((key) => {
+      if(key === 'heale_usage'){
+        console.log('Setting Selected:', initialValues[key]);
+        setSelected(initialValues[key]);
+      }else{
+        setValue(key, initialValues[key]);
+      }
+    });
+  }, []);
+
+  const handleSelectChange = (selectedOptions: any) => {
+    setSelected(selectedOptions);
+    handleChange('heale_usage', selectedOptions);
+  };
+
+  const {
+    onChange: ssnOnChange,
+    ref: ssnRef,
+    ...ssnRest
+  } = register('ssn', {
+    required: 'This field is required',
+    onChange: (e) => handleChange('ssn', e.target.value),
+    validate: (value) =>
+      value.replace(/\D/g, '').length === 9 || 'SSN must be exactly 9 digits',
+  });
+
   return (
     <Box>
       <Heading as={'h4'} mb={4} fontSize={'3xl'} color={'Primary.Navy'}>
@@ -149,12 +194,7 @@ const VerifyIdentity = () => {
       >
         {' '}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid
-            mb={6}
-            gridTemplateColumns={{ lg: 'repeat(3,1fr)', base: 'repeat(1,1fr)' }}
-            gap={{ lg: 6, base: 0 }}
-            rowGap={{ lg: 0, base: 6 }}
-          >
+          <Grid mb={6} gridTemplateColumns={{ lg: 'repeat(3,1fr)', base: 'repeat(1,1fr)' }} gap={{ lg: 6, base: 0 }} rowGap={{ lg: 0, base: 6 }}>
             <FormControl>
               <FormLabel htmlFor="legal_first_name">Legal First Name</FormLabel>
               <Input
@@ -168,6 +208,7 @@ const VerifyIdentity = () => {
                     value: 4,
                     message: 'Minimum length should be 4',
                   },
+                  onChange: (e) => handleChange('legal_first_name', e.target.value)
                 })}
               />
               <FormErrorMessage message={errors?.legal_first_name?.message} />
@@ -185,6 +226,7 @@ const VerifyIdentity = () => {
                     value: 4,
                     message: 'Minimum length should be 4',
                   },
+                  onChange: (e) => handleChange('legal_last_name', e.target.value)
                 })}
               />
               <FormErrorMessage message={errors?.legal_last_name?.message} />
@@ -193,32 +235,20 @@ const VerifyIdentity = () => {
               <FormLabel htmlFor="heal_usage">
                 What countries do you operate in?
               </FormLabel>
-              <Select
-                id="heal_usage"
-                multiple
-                value={selectedCountries}
-                onChange={handleSelectChange} // Manually handle onChange
-                ref={ref} // Apply ref from register
-                {...rest} // Spread the rest of the register properties except onChange
-                isInvalid={!!errors.heal_usage}
-              >
-                {countries.map((country: Country) => (
-                  <option key={country.value} value={country.value}>
-                    {country.label}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>
-                {errors.heal_usage && errors.heal_usage.message}
-              </FormErrorMessage>
+              <MultiSelect
+                className='custom-multi-select2'
+                options={countries}
+                hasSelectAll={true}
+                value={selected}
+                onChange={handleSelectChange}
+                labelledBy={"Select"}
+                valueRenderer={(selected, options) => customValueRenderer(selected as ServiceOption[], handleRemove)}
+              />
+              <FormErrorMessage message={countriesError ? countriesError : ''} />
+                
             </FormControl>
           </Grid>
-          <Grid
-            mb={6}
-            gridTemplateColumns={{ lg: 'repeat(3,1fr)', base: 'repeat(1,1fr)' }}
-            gap={{ lg: 6, base: 0 }}
-            rowGap={{ lg: 0, base: 6 }}
-          >
+          <Grid mb={6} gridTemplateColumns={{ lg: 'repeat(3,1fr)', base: 'repeat(1,1fr)' }} gap={{ lg: 6, base: 0 }} rowGap={{ lg: 0, base: 6 }}>
             <GridItem colSpan={2}>
               <FormControl>
                 <FormLabel htmlFor="dob">Date of birth</FormLabel>
@@ -230,6 +260,7 @@ const VerifyIdentity = () => {
                       errorBorderColor="Secondary.Red"
                       {...register('month', {
                         required: 'This field is required',
+                        onChange: (e) => handleChange('month', e.target.value)
                       })}
                     >
                       {Array.from({ length: 12 }, (_, i) => i + 1).map(
@@ -249,6 +280,7 @@ const VerifyIdentity = () => {
                       errorBorderColor="Secondary.Red"
                       {...register('day', {
                         required: 'This field is required',
+                        onChange: (e) => handleChange('day', e.target.value)
                       })}
                     >
                       {Array.from({ length: 31 }, (_, i) => i + 1).map(
@@ -268,6 +300,7 @@ const VerifyIdentity = () => {
                       errorBorderColor="Secondary.Red"
                       {...register('year', {
                         required: 'This field is required',
+                        onChange: (e) => handleChange('year', e.target.value)
                       })}
                     >
                       {Array.from({ length: 100 }, (_, i) => 2020 - i).map(
@@ -291,6 +324,7 @@ const VerifyIdentity = () => {
                 placeholder="Select"
                 {...register('source_of_funds', {
                   required: 'This field is required',
+                  onChange: (e) => handleChange('source_of_funds', e.target.value)
                 })}
               >
                 {sourceOfFunds.map((source, index) => (
@@ -302,12 +336,7 @@ const VerifyIdentity = () => {
               <FormErrorMessage message={errors?.source_of_funds?.message} />
             </FormControl>
           </Grid>
-          <Grid
-            mb={6}
-            gridTemplateColumns={{ lg: 'repeat(3,1fr)', base: 'repeat(1,1fr)' }}
-            gap={{ lg: 6, base: 0 }}
-            rowGap={{ lg: 0, base: 6 }}
-          >
+          <Grid mb={6} gridTemplateColumns={{ lg: 'repeat(3,1fr)', base: 'repeat(1,1fr)' }} gap={{ lg: 6, base: 0 }} rowGap={{ lg: 0, base: 6 }}>
             <GridItem colSpan={2}>
               <FormControl>
                 <FormLabel htmlFor="">Street address</FormLabel>
@@ -320,6 +349,7 @@ const VerifyIdentity = () => {
                       placeholder="Address line 1"
                       {...register('address_1', {
                         required: 'This field is required',
+                        onChange: (e) => handleChange('address_1', e.target.value)
                       })}
                     />
                     <FormErrorMessage message={errors?.address_1?.message} />
@@ -329,7 +359,9 @@ const VerifyIdentity = () => {
                       type="text"
                       // errorBorderColor="Secondary.Red"
                       placeholder="Address line 2"
-                      {...register('address_2')}
+                      {...register('address_2', {
+                        onChange: (e) => handleChange('address_2', e.target.value)
+                      })}
                     />
                   </GridItem>
                   <GridItem colSpan={2}>
@@ -340,6 +372,7 @@ const VerifyIdentity = () => {
                       placeholder="City"
                       {...register('city', {
                         required: 'This field is required',
+                        onChange: (e) => handleChange('city', e.target.value)
                       })}
                     />
                     <FormErrorMessage message={errors?.city?.message} />
@@ -351,6 +384,7 @@ const VerifyIdentity = () => {
                       placeholder="State"
                       {...register('state', {
                         required: 'This field is required',
+                        onChange: (e) => handleChange('state', e.target.value)
                       })}
                     >
                       {states.map((state, index) => (
@@ -369,6 +403,7 @@ const VerifyIdentity = () => {
                       placeholder="Zip code"
                       {...register('zip_code', {
                         required: 'This field is required',
+                        onChange: (e) => handleChange('zip_code', e.target.value)
                       })}
                     />
                     <FormErrorMessage message={errors?.zip_code?.message} />
@@ -385,6 +420,7 @@ const VerifyIdentity = () => {
                   placeholder="Select"
                   {...register('employment_status', {
                     required: 'This field is required',
+                    onChange: (e) => handleChange('employment_status', e.target.value)
                   })}
                 >
                   {employmentStatus.map((status, index) => (
@@ -403,7 +439,6 @@ const VerifyIdentity = () => {
                   type="text"
                   isInvalid={errors?.ssn?.message ? true : false}
                   errorBorderColor="Secondary.Red"
-                  placeholder="(123-45-6789)"
                   value={ssn}
                   onChange={(event) => {
                     const formattedSSN = formatSSN(event.target.value);
@@ -429,6 +464,7 @@ const VerifyIdentity = () => {
                   placeholder="Select"
                   {...register('citizenship', {
                     required: 'This field is required',
+                    onChange: (e) => handleChange('citizenship', e.target.value)
                   })}
                 >
                   {countries.map((country) => (

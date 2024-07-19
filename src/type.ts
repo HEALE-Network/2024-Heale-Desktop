@@ -125,4 +125,3 @@ export interface approval_table_rows {
 export interface EmptyTable {
   emptyMesg: string;
 }
-
