@@ -48,7 +48,7 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 2244
+        port: 22
         script: |
           ls -l && pwd
           cd /home/ubuntu/2024-Heale-Desktop/
