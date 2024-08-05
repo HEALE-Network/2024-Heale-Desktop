@@ -67,6 +67,8 @@ const BusinessInfo = () => {
   const [acceptedFiles, setAcceptedFiles] = useState<File[]>([]);
   const [employerIdentificationNumber, setEmployerIdentificationNumber] =
     useState('');
+  const [dunsNumber, setDunsNumber] =
+    useState('');
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setAcceptedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
@@ -190,6 +192,21 @@ const BusinessInfo = () => {
     }
   };
 
+  const formatDUNS = (value: any) => {
+    // Remove non-digit characters and limit to 9 digits
+    const digits = value.replace(/\D/g, '').slice(0, 9);
+
+    // Apply formatting only once
+    if (digits.length <= 2) {
+        return digits;
+    } else if (digits.length > 2 && digits.length <= 5) {
+        return digits.replace(/(\d{2})(\d{0,3})/, '$1-$2');
+    } else {
+        return digits.replace(/(\d{2})(\d{3})(\d{0,4})/, '$1-$2-$3');
+    }
+};
+
+
   const {
     register,
     control,
@@ -217,6 +234,7 @@ const BusinessInfo = () => {
     const userBusiness = {
       employer_identification_number: values?.employer_identification_number,
       business_legal_name: values?.business_legal_name,
+      business_dba_name: values?.business_dba_name,
       entity_type: values?.entity_type,
       type: JSON.stringify(valuesArray),
       business_email: values?.business_email,
@@ -324,6 +342,18 @@ const BusinessInfo = () => {
       value.replace(/\D/g, '').length === 9 || 'EIN must be exactly 9 digits',
   });
 
+  const {
+    onChange: dunsOnChange,
+    ref: dunsRef,
+    ...dunsRest
+  } = register('duns_number', {
+    required: 'This field is required',
+    onChange: (e) =>
+      handleChange('duns_number', e.target.value),
+    validate: (value) =>
+      value.replace(/\D/g, '').length === 9 || 'Duns Number must be exactly 9 digits',
+  });
+
   return (
     <Box w={{ lg: '50%', md: '60%', base: '100%' }}>
       <Heading as={'h4'} mb={4} fontSize={'3xl'} color={'Primary.Navy'}>
@@ -385,6 +415,23 @@ const BusinessInfo = () => {
                   required: 'This field is required',
                   onChange: (e) =>
                     handleChange('business_legal_name', e.target.value),
+                })}
+              />
+              <FormErrorMessage
+                message={errors?.business_legal_name?.message}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>DBA Name</FormLabel>
+              <Input
+                type="text"
+                placeholder="Enter business's DBA name"
+                isInvalid={errors?.business_dba_name?.message ? true : false}
+                errorBorderColor="Secondary.Red"
+                {...register('business_dba_name', {
+                  required: 'This field is required',
+                  onChange: (e) =>
+                    handleChange('business_dba_name', e.target.value),
                 })}
               />
               <FormErrorMessage
@@ -678,13 +725,19 @@ const BusinessInfo = () => {
                 placeholder="Enter DUNS Number"
                 isInvalid={errors?.duns_number?.message ? true : false}
                 errorBorderColor="Secondary.Red"
-                {...register('duns_number', {
-                  pattern: {
-                    value: /^\d{9}$/,
-                    message: 'DUNS must be exactly 9 digits',
-                  },
-                  onChange: (e) => handleChange('duns_number', e.target.value),
-                })}
+                value={dunsNumber}
+                onChange={(event) => {
+                  const formattedDuns = formatDUNS(event.target.value);
+                  setDunsNumber(formattedDuns);
+                  dunsOnChange({
+                    target: {
+                      name: 'duns_number',
+                      value: formattedDuns,
+                    },
+                  });
+                }}
+                ref={dunsRef}
+                {...dunsRest}
               />
               <FormErrorMessage message={errors?.duns_number?.message} />
             </FormControl>

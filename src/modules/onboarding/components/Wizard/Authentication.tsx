@@ -198,7 +198,7 @@ const Authentication = () => {
             Verify Your Phone Number
           </Heading>
           <Text fontSize={'sm'} fontWeight={500} color={'Neutral.800'}>
-            We'll Send you a code via sms
+            We'll send you a code via SMS
           </Text>
           <FormControl mt={4}>
             <FormLabel fontSize={'sm'} fontWeight={500} color={'Primary.Navy'}>

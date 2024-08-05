@@ -72,7 +72,7 @@ const VerifyIdentity = () => {
         </Text>
       ))
     ) : (
-      <span>No Items Selected</span>
+      <span>Select</span>
     );
   };
 
@@ -219,7 +219,7 @@ const VerifyIdentity = () => {
                 type="text"
                 isInvalid={errors?.legal_last_name?.message ? true : false}
                 errorBorderColor="Secondary.Red"
-                placeholder="Your Last Name"
+                placeholder="Legal Last Name"
                 {...register('legal_last_name', {
                   required: 'This field is required',
                   minLength: {
