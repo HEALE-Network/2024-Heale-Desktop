@@ -16,15 +16,15 @@ const PersonalAccount = () => {
   return (
     <Container maxW={{ lg: '80%', sm: '90%', base: '100%' }}>
       <Flex gap={{ md: 8, base: 4 }} flexDir={{ md: 'row', base: 'column' }}>
-        <Wizard startIndex={step} header={<WizardHeader />}>
-          <ThirdwebProvider>
+        <ThirdwebProvider>
+          <Wizard startIndex={step} header={<WizardHeader />}>
             <PersonalInfo />
             <Authentication />
             <VerifyIdentity />
             <ConnectAccount />
             <RecieveCard />
-          </ThirdwebProvider>
-        </Wizard>
+          </Wizard>
+        </ThirdwebProvider>
       </Flex>
     </Container>
   );

@@ -22,8 +22,8 @@ const BusinessAccount = () => {
     <Container maxW={{ lg: '80%', base: '90%' }}>
       <Flex gap={{ md: 8, base: 4 }} flexDir={{ md: 'row', base: 'column' }}>
         <BusinessProvider>
-          <Wizard startIndex={step} header={<WizardHeader />}>
-            <ThirdwebProvider>
+          <ThirdwebProvider>
+            <Wizard startIndex={step} header={<WizardHeader />}>
               <PersonalInfo type={'business'} />
               <Authentication />
               <VerifyIdentity />
@@ -32,8 +32,8 @@ const BusinessAccount = () => {
               <ConnectAccount />
               <RecieveCard />
               <TeamInfo />
-            </ThirdwebProvider>
-          </Wizard>
+            </Wizard>
+          </ThirdwebProvider>
         </BusinessProvider>
       </Flex>
     </Container>
