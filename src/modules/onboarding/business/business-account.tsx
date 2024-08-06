@@ -13,23 +13,26 @@ import BusinessInfo from '../components/Wizard/BusinessInfo';
 import Application from '../components/Wizard/Application';
 import TeamInfo from '../components/Wizard/TeamInfo';
 import { BusinessProvider } from 'context/BusinessContext';
+import { ThirdwebProvider } from 'thirdweb/react';
 
 const BusinessAccount = () => {
   const [step] = usePersistedStep(0);
 
   return (
     <Container maxW={{ lg: '80%', base: '90%' }}>
-      <Flex gap={{ md: 8, base: 4 }} flexDir={{ md: "row", base: "column" }}>
+      <Flex gap={{ md: 8, base: 4 }} flexDir={{ md: 'row', base: 'column' }}>
         <BusinessProvider>
           <Wizard startIndex={step} header={<WizardHeader />}>
-            <PersonalInfo type={'business'}/>
-            <Authentication />
-            <VerifyIdentity />
-            <BusinessInfo />
-            <Application />
-            <ConnectAccount />
-            <RecieveCard />
-            <TeamInfo />
+            <ThirdwebProvider>
+              <PersonalInfo type={'business'} />
+              <Authentication />
+              <VerifyIdentity />
+              <BusinessInfo />
+              <Application />
+              <ConnectAccount />
+              <RecieveCard />
+              <TeamInfo />
+            </ThirdwebProvider>
           </Wizard>
         </BusinessProvider>
       </Flex>
